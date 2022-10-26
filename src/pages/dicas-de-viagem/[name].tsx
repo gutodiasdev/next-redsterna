@@ -3,7 +3,7 @@ import * as C from "../../styles/suggestions-page";
 
 /* eslint-disable */
 const SuggestionPage = (props: any) => {
-  const name: string = props.match.params.name;
+  const name: string = '';
 
   const page: any = {
     aluguel: {

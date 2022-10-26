@@ -1,8 +1,6 @@
 import * as S from "./style";
 
 import Modal from "react-modal";
-import { toast } from "react-toastify";
-import api from "../../services/api";
 
 const DeleteItinerary = (props: any) => {
   const customStyles = {
@@ -68,15 +66,15 @@ const DeleteItinerary = (props: any) => {
             <S.ColumnContainer>
               <S.RowContainer>
                 <S.RowLabel>Título da viagem</S.RowLabel>
-                {`${props.itinerary.title || ""}`}
+                {`${props.itinerary?.title || ""}`}
               </S.RowContainer>
               <S.RowContainer>
                 <S.RowLabel>Dias de viagem</S.RowLabel>
-                {`${props.itinerary.days || "0"} `}
+                {`${props.itinerary?.days || "0"} `}
               </S.RowContainer>
               <S.RowContainer>
                 <S.RowLabel>Custo total por pessoa</S.RowLabel>
-                {`${props.itinerary.spent || "0.00"}`}
+                {`${props.itinerary?.spent || "0.00"}`}
               </S.RowContainer>
               <S.SummaryContainer>
                 <S.RowLabel>Resumo da viagem</S.RowLabel>

@@ -18,11 +18,7 @@ import { useItineraries } from '../../contexts/itinerary.context';
 const Itinerary = (props: any) => {
   const { uploadFile } = useItineraries();
 
-  const { itinerary } = props.location.state;
-
-  const initialValues = {
-    ...itinerary,
-  };
+  const initialValues = {};
 
   const uploadFileCallback = async (file: any) => {
     const response = await uploadFile(file);

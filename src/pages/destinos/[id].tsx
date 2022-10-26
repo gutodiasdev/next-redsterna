@@ -9,7 +9,7 @@ import { useItineraries } from '../../contexts/itinerary.context';
 
 /* eslint-disable */
 export default function ShowItinerary (props: any) {
-  const itinerary = props.location.state.itinerary;
+  const itinerary: any = {};
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 

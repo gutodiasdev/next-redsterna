@@ -13,7 +13,7 @@ const User = (props: any) => {
   const [favoriteItineraries, setFavoriteItineraries] = useState<any>([]);
   const [destinies, setDestinies] = useState(0);
 
-  const user = props.location.state.user;
+  const user: any = {};
 
   const DEFAULT_TEXT =
     "Viajante RedSterna que busca viver e compartilhar experiências incríveis ao redor do mundo! Siga-me para acompanhar minha jornada.";

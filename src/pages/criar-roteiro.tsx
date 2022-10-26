@@ -12,9 +12,6 @@ import { useItineraries } from '../contexts/itinerary.context';
 
 const FormikObserver = () => {
   const { values } = useFormikContext();
-  React.useEffect(() => {
-    window.localStorage.setItem("itinerary", JSON.stringify(values));
-  }, [values]);
 
   return null;
 };
@@ -61,7 +58,7 @@ const Itinerary = () => {
     images: [],
   };
 
-  const cached: any = window.localStorage.getItem("itinerary");
+  const cached: any = {};
   const initialValues: any =
     cached && cached !== "" ? JSON.parse(cached) : formEmptyValues;
 
@@ -81,13 +78,6 @@ const Itinerary = () => {
           initialValues={initialValues}
           onSubmit={async (values) => {
             try {
-              // window.localStorage.setItem("itinerary", "");
-              // await api.post("/itineraries/create", {
-              //   ...values,
-              //   author: user._id,
-              //   type: "simple",
-              //   made: Boolean(values.made === "true"),
-              // });
               console.log(values);
               toast.success("Roteiro criado com sucesso", {
                 position: "top-right",
