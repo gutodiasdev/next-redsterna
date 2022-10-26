@@ -1,8 +1,11 @@
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
+import { ToastContainer } from "react-toastify";
 import { createGlobalStyle } from "styled-components";
 import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query';
+
+import RootProvider from "../contexts/index";
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -28,9 +31,7 @@ a {
     background: white;
     color: black;
   }
-}
-
-`;
+}`;
 
 const queryClient = new QueryClient();
 
@@ -39,8 +40,11 @@ export default function App ({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <ChakraProvider>
-          <GlobalStyle />
-          <Component {...pageProps} />;
+          <RootProvider>
+            <GlobalStyle />
+            <ToastContainer />
+            <Component {...pageProps} />
+          </RootProvider>
         </ChakraProvider>
       </RecoilRoot>
     </QueryClientProvider >
