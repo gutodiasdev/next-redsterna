@@ -81,7 +81,9 @@ export const UserProvider = ({ children }: any) => {
     try {
       const { data: user } = await api.get("/user");
 
-      window.localStorage.setItem("user", JSON.stringify(user));
+      if (window) {
+        window.localStorage.setItem("user", JSON.stringify(user));
+      }
 
       setUser(JSON.stringify({ ...user, password: null }));
 
@@ -150,7 +152,7 @@ export const UserProvider = ({ children }: any) => {
     return response.data.locationInS3;
   };
 
-  const stringifyUser: any = window.localStorage.getItem("user");
+  const stringifyUser: any = window ? window.localStorage.getItem("user") : null;
 
   const storageUser =
     stringifyUser && stringifyUser.length > 1
