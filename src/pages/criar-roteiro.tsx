@@ -59,8 +59,7 @@ const Itinerary = () => {
   };
 
   const cached: any = {};
-  const initialValues: any =
-    cached && cached !== "" ? JSON.parse(cached) : formEmptyValues;
+  const initialValues: any = {};
 
   const uploadFileCallback = async (file: any) => {
     const response = await uploadFile(file);

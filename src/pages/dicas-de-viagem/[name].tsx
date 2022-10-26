@@ -759,8 +759,8 @@ const SuggestionPage = (props: any) => {
     <C.Container>
       <C.Section>
         {/* <C.Image src={content.image} /> */}
-        <h2>{content.title}</h2>
-        {content.description}
+        {/* <h2>{content.title}</h2>
+        {content.description} */}
       </C.Section>
     </C.Container>
   );

@@ -322,81 +322,81 @@ const Itinerary = (props: any) => {
                 </S.Description>
                 <FieldArray
                   name="simple.cities"
-                  render={(arrayHelpers) => {
-                    return values.simple.cities.length > 0 ? (
-                      values.simple.cities.map((city: any, index: any) => (
-                        <React.Fragment key={city.coordinates.latitude}>
-                          <button
-                            style={{ width: 200, height: 30, marginTop: 20 }}
-                            type="button"
-                            onClick={() => arrayHelpers.remove(index)}
-                          >
-                            Remover cidade abaixo:
-                          </button>
-                          <CityForm
-                            values={values}
-                            handleChange={handleChange}
-                            handleBlur={handleBlur}
-                            city={city}
-                            index={index}
-                            arrayHelpers={arrayHelpers}
-                            setFieldValue={setFieldValue}
-                          />
-                          {values.simple.cities.length === index + 1 && (
-                            <button
-                              style={{ width: 200, height: 30 }}
-                              type="button"
-                              onClick={() =>
-                                arrayHelpers.insert(index, {
-                                  name: "",
-                                  description: "",
-                                  coordinates: {
-                                    latitude: 0,
-                                    longitude: 0,
-                                  },
-                                  rate: 0,
-                                  accommodations: [
-                                    {
-                                      name: "",
-                                      rate: 0,
-                                    },
-                                  ],
-                                  images: [],
-                                })
-                              }
-                            >
-                              Adicionar mais cidades
-                            </button>
-                          )}
-                        </React.Fragment>
-                      ))
-                    ) : (
-                      <button
-                        style={{ width: 200, height: 30 }}
-                        type="button"
-                        onClick={() =>
-                          arrayHelpers.push({
-                            name: "",
-                            description: "",
-                            coordinates: {
-                              latitude: 0,
-                              longitude: 0,
-                            },
-                            rate: 0,
-                            accommodations: [
-                              {
-                                name: "",
-                                rate: 0,
-                              },
-                            ],
-                            images: [],
-                          })
-                        }
-                      >
-                        Adicionar uma cidade
-                      </button>
-                    );
-                  }}
+                // render={(arrayHelpers) => {
+                //   return values.simple.cities.length > 0 ? (
+                //     values.simple.cities.map((city: any, index: any) => (
+                //       <React.Fragment key={city.coordinates.latitude}>
+                //         <button
+                //           style={{ width: 200, height: 30, marginTop: 20 }}
+                //           type="button"
+                //           onClick={() => arrayHelpers.remove(index)}
+                //         >
+                //           Remover cidade abaixo:
+                //         </button>
+                //         <CityForm
+                //           values={values}
+                //           handleChange={handleChange}
+                //           handleBlur={handleBlur}
+                //           city={city}
+                //           index={index}
+                //           arrayHelpers={arrayHelpers}
+                //           setFieldValue={setFieldValue}
+                //         />
+                //         {values.simple.cities.length === index + 1 && (
+                //           <button
+                //             style={{ width: 200, height: 30 }}
+                //             type="button"
+                //             onClick={() =>
+                //               arrayHelpers.insert(index, {
+                //                 name: "",
+                //                 description: "",
+                //                 coordinates: {
+                //                   latitude: 0,
+                //                   longitude: 0,
+                //                 },
+                //                 rate: 0,
+                //                 accommodations: [
+                //                   {
+                //                     name: "",
+                //                     rate: 0,
+                //                   },
+                //                 ],
+                //                 images: [],
+                //               })
+                //             }
+                //           >
+                //             Adicionar mais cidades
+                //           </button>
+                //         )}
+                //       </React.Fragment>
+                //     ))
+                //   ) : (
+                //     <button
+                //       style={{ width: 200, height: 30 }}
+                //       type="button"
+                //       onClick={() =>
+                //         arrayHelpers.push({
+                //           name: "",
+                //           description: "",
+                //           coordinates: {
+                //             latitude: 0,
+                //             longitude: 0,
+                //           },
+                //           rate: 0,
+                //           accommodations: [
+                //             {
+                //               name: "",
+                //               rate: 0,
+                //             },
+                //           ],
+                //           images: [],
+                //         })
+                //       }
+                //     >
+                //       Adicionar uma cidade
+                //     </button>
+                //   );
+                // }}
                 />
                 <S.Button type="submit">Salvar Roteiro</S.Button>
               </S.FormContainer>

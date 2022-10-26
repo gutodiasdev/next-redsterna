@@ -64,7 +64,7 @@ const DeleteItinerary = (props: any) => {
               </S.Description>
             </S.TitleContainer>
             <S.ColumnContainer>
-              <S.RowContainer>
+              {/* <S.RowContainer>
                 <S.RowLabel>Título da viagem</S.RowLabel>
                 {`${props.itinerary?.title || ""}`}
               </S.RowContainer>
@@ -81,7 +81,7 @@ const DeleteItinerary = (props: any) => {
                 {`${props.itinerary.simpĺe?.summary ||
                   "Poxa! Nenhum roteiro adicionado :c"
                   }`}
-              </S.SummaryContainer>
+              </S.SummaryContainer> */}
             </S.ColumnContainer>
 
             <S.RowContainer>

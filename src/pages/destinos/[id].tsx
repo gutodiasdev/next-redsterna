@@ -43,7 +43,7 @@ export default function ShowItinerary (props: any) {
     }
   };
 
-  const isFavorited = user.favorites.find((id: any) => id === itinerary._id) ?? {};
+  const isFavorited = {};
 
   return (
     <Container>
