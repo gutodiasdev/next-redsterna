@@ -43,7 +43,7 @@ export default function ShowItinerary (props: any) {
     }
   };
 
-  const isFavorited = user.favorites.find((id: any) => id === itinerary._id);
+  const isFavorited = user.favorites.find((id: any) => id === itinerary._id) ?? {};
 
   return (
     <Container>
@@ -99,7 +99,7 @@ export default function ShowItinerary (props: any) {
           </textarea>
           <Column>
             <b style={{ marginTop: 30 }}>Cidades visitadas:</b>
-            {itinerary.simple.cities.length > 0 &&
+            {/* {itinerary.simple.cities.length > 0 &&
               itinerary.simple.cities.map((city: any, i: number) => (
                 <Column key={i}>
                   <Line fullWidth>
@@ -152,7 +152,7 @@ export default function ShowItinerary (props: any) {
                     </div>
                   </Line>
                 </Column>
-              ))}
+              ))} */}
           </Column>
         </Content>
       </Line>
