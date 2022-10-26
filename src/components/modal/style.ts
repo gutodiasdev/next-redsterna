@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -31,7 +30,7 @@ export const AncorWrapper = styled.div`
   width: 100%;
 `;
 
-export const Ancor = styled(Link)`
+export const Ancor = styled.div`
   font-size: 14px;
   cursor: pointer;
   color: #922b21;

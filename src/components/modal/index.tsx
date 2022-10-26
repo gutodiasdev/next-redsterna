@@ -4,12 +4,13 @@ import { Formik, Field } from "formik";
 
 import { useAuth } from "../../contexts/auth.context";
 import Modal from "react-modal";
-import { useHistory } from 'react-router-dom';
+
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const LoginModal = (props: any) => {
   const { signIn } = useAuth();
-  // const [, setUserData] = useRecoilState(userDataState);
-  const history = useHistory();
+  const router = useRouter();
 
   const customStyles = {
     content: {
@@ -53,7 +54,7 @@ const LoginModal = (props: any) => {
           <S.Container>
             <S.RowContainer>
               <S.CloseButton onClick={props.closeModal}>
-                <img
+                <Image
                   src="/images/close_icon.png"
                   alt="close_icon"
                   height={20}
@@ -77,7 +78,7 @@ const LoginModal = (props: any) => {
               validate={validate}
               onSubmit={async (values) => {
                 signIn(values).then(() => {
-                  history.push('/minha-conta');
+                  router.push('/minha-conta');
                 });
               }
               }
