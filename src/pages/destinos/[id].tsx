@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import LoginModal from "../../components/modal";
 import StarRating from "../../components/starRating";
 
-import { useItineraries } from "..//../contexts/itinerary.context";
-import { useUser } from "../../contexts/user.context";
-
 import { Column, Container, Content, Header, Line, Star } from "../../styles/show-itineraries";
 import Image from 'next/image';
+import { useItineraries } from '../../contexts/itinerary.context';
 
 /* eslint-disable */
 export default function ShowItinerary (props: any) {
@@ -15,19 +13,20 @@ export default function ShowItinerary (props: any) {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { user, getUserData } = useUser();
   const { favoriteItinerary, rateItinerary } = useItineraries();
+
+  const user: any = {};
 
   const authenticated = !!user;
 
-  const onFavoriteItinerary = async (id: string) => {
-    if (authenticated) {
-      await favoriteItinerary(id);
-      await getUserData();
-    } else {
-      setIsModalVisible(true);
-    }
-  };
+  // const onFavoriteItinerary = async (id: string) => {
+  //   if (authenticated) {
+  //     await favoriteItinerary(id);
+  //     await getUserData();
+  //   } else {
+  //     setIsModalVisible(true);
+  //   }
+  // };
 
   const onRateItinerary = async ({
     id,
@@ -44,11 +43,7 @@ export default function ShowItinerary (props: any) {
     }
   };
 
-  const isFavorited = user.favorites.find((id) => id === itinerary._id);
-
-  useEffect(() => {
-    getUserData();
-  }, []);
+  const isFavorited = user.favorites.find((id: any) => id === itinerary._id);
 
   return (
     <Container>
@@ -75,7 +70,7 @@ export default function ShowItinerary (props: any) {
             <h4>Título: {itinerary.title}</h4>
             <Star
               color={isFavorited ? "#ffc107" : "#bfbfbf"}
-              onClick={() => onFavoriteItinerary(itinerary._id)}
+              onClick={() => { }}
               size={40}
             />
           </div>
