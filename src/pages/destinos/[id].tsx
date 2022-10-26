@@ -7,6 +7,7 @@ import { useItineraries } from "..//../contexts/itinerary.context";
 import { useUser } from "../../contexts/user.context";
 
 import { Column, Container, Content, Header, Line, Star } from "../../styles/show-itineraries";
+import Image from 'next/image';
 
 /* eslint-disable */
 export default function ShowItinerary (props: any) {
@@ -145,7 +146,7 @@ export default function ShowItinerary (props: any) {
                     >
                       {city.images.length > 0 &&
                         city.images.map((image: string) => (
-                          <img
+                          <Image
                             src={image}
                             width={300}
                             height={300}

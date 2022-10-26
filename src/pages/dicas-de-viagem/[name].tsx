@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import * as C from "../../styles/suggestions-page";
 
 /* eslint-disable */
@@ -284,7 +285,7 @@ const SuggestionPage = (props: any) => {
               href="https://www.segurospromo.com.br/?utm_medium=afiliado&amp;utm_source=banner&amp;pcrid=4662&amp;pcrtt=parceiros_banner99"
               rel="noreferrer"
             >
-              <img
+              <Image
                 alt="Seguros Promo"
                 width="300"
                 height="250"
@@ -334,7 +335,7 @@ const SuggestionPage = (props: any) => {
             href="https://www.segurospromo.com.br/?utm_medium=afiliado&amp;utm_source=banner&amp;pcrid=4662&amp;pcrtt=parceiros_banner91"
             rel="noreferrer"
           >
-            <img
+            <Image
               alt="Seguros Promo"
               width="300"
               height="250"
@@ -420,7 +421,7 @@ const SuggestionPage = (props: any) => {
           </p>
           <div className="col-xs-12 banner-pic">
             {" "}
-            <img src="LINK DA IMAGEM VAI AQUI" />{" "}
+            <Image src="LINK DA IMAGEM VAI AQUI" alt='' />{" "}
           </div>
           <p> </p>
           <h4>
@@ -433,7 +434,7 @@ const SuggestionPage = (props: any) => {
           <p></p>
           <div className="col-xs-12 banner-pic">
             {" "}
-            <img src="LINK DA IMAGEM DA VIATOR" />{" "}
+            <Image src="LINK DA IMAGEM DA VIATOR" alt='' />{" "}
           </div>
         </article>
       ),
@@ -477,7 +478,7 @@ const SuggestionPage = (props: any) => {
             target="_blank"
             rel="noreferrer"
           >
-            <img src="//372978-1166811-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2020/02/336x280_3.jpg" />
+            <Image src="//372978-1166811-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2020/02/336x280_3.jpg" alt='' />
           </a>
           <p>
             {" "}
@@ -556,7 +557,7 @@ const SuggestionPage = (props: any) => {
             target="_blank"
             rel="noreferrer"
           >
-            <img src="//372978-1166811-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2020/02/300x250_4.jpg" />
+            <Image src="//372978-1166811-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2020/02/300x250_4.jpg" alt='' />
           </a>
           <p> </p>
           <h4>

@@ -10,6 +10,7 @@ import CityForm from "../components/cities";
 import "react-toastify/dist/ReactToastify.css";
 import * as S from "../styles/create-itineraries";
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const FormikObserver = () => {
   const { values } = useFormikContext();
@@ -317,7 +318,7 @@ const Itinerary = () => {
                         >
                           X
                         </button>
-                        <img
+                        <Image
                           src={values.cover}
                           width={200}
                           height={200}

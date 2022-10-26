@@ -6,6 +6,7 @@ import { useItineraries } from "../../contexts/itinerary.context";
 
 import * as S from "./style";
 import StarRating from "../starRating";
+import Image from 'next/image';
 
 const CityForm = (props: any) => {
   const { index, handleChange, handleBlur, values, setFieldValue }: any = props;
@@ -17,7 +18,7 @@ const CityForm = (props: any) => {
   const [listOptions, setListOptions] = useState<any>([]);
 
   useEffect(() => {
-    async function changeOptions() {
+    async function changeOptions () {
       const response = await axios.get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${cityName}.json?language=pt&access_token=pk.eyJ1IjoidGhhaXNhcmVtIiwiYSI6ImNrNWU3cTZwcjI0Y3IzbnFodjY5aWJsdnYifQ.SPYT3Yxdc-H3F0U_XRwzJw`
       );
@@ -66,54 +67,54 @@ const CityForm = (props: any) => {
         {listOptions.filter((item: any) =>
           item.place_name_pt.toLowerCase().includes(cityName.toLowerCase())
         ).length > 0 && (
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              overflowY: "auto",
-            }}
-          >
-            {listOptions
-              .filter((item: any) =>
-                item.place_name_pt
-                  .toLowerCase()
-                  .includes(cityName.toLowerCase())
-              )
-              .map((item: any, optionIndex: any) => (
-                <button
-                  type="button"
-                  style={{
-                    backgroundColor: "transparent",
-                    height: 40,
-                    border: "0.1px solid black",
-                    width: "100%",
-                  }}
-                  key={optionIndex}
-                  onClick={() => {
-                    setCityName(item.place_name_pt);
-                    setFieldValue(
-                      `simple.cities.${index}.name`,
-                      item.place_name_pt
-                    );
-                    setFieldValue(
-                      `simple.cities.${index}.coordinates.latitude`,
-                      item.geometry.coordinates[1]
-                    );
-                    setFieldValue(
-                      `simple.cities.${index}.coordinates.longitude`,
-                      item.geometry.coordinates[0]
-                    );
-                    setListOptions([]);
-                  }}
-                >
-                  <p>{item.place_name_pt}</p>
-                </button>
-              ))}
-          </div>
-        )}
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                overflowY: "auto",
+              }}
+            >
+              {listOptions
+                .filter((item: any) =>
+                  item.place_name_pt
+                    .toLowerCase()
+                    .includes(cityName.toLowerCase())
+                )
+                .map((item: any, optionIndex: any) => (
+                  <button
+                    type="button"
+                    style={{
+                      backgroundColor: "transparent",
+                      height: 40,
+                      border: "0.1px solid black",
+                      width: "100%",
+                    }}
+                    key={optionIndex}
+                    onClick={() => {
+                      setCityName(item.place_name_pt);
+                      setFieldValue(
+                        `simple.cities.${index}.name`,
+                        item.place_name_pt
+                      );
+                      setFieldValue(
+                        `simple.cities.${index}.coordinates.latitude`,
+                        item.geometry.coordinates[1]
+                      );
+                      setFieldValue(
+                        `simple.cities.${index}.coordinates.longitude`,
+                        item.geometry.coordinates[0]
+                      );
+                      setListOptions([]);
+                    }}
+                  >
+                    <p>{item.place_name_pt}</p>
+                  </button>
+                ))}
+            </div>
+          )}
         <S.Label>
           Avaliação
           <StarRating
@@ -130,7 +131,7 @@ const CityForm = (props: any) => {
             render={(arrayHelpers) => {
               return values.simple.cities[index].accommodations.length > 0 ? (
                 values.simple.cities[index].accommodations.map(
-                  (accommodation: { name: string; rate: 1 }, indexAcc: any) => (
+                  (accommodation: { name: string; rate: 1; }, indexAcc: any) => (
                     <React.Fragment key={indexAcc}>
                       <button
                         style={{ width: 250, marginTop: 10 }}
@@ -176,19 +177,19 @@ const CityForm = (props: any) => {
                       </div>
                       {values.simple.cities[index].accommodations.length ===
                         indexAcc + 1 && (
-                        <button
-                          style={{ width: 250 }}
-                          type="button"
-                          onClick={() =>
-                            arrayHelpers.insert(indexAcc + 1, {
-                              name: "",
-                              rate: 0,
-                            })
-                          }
-                        >
-                          Adicionar hospedagem
-                        </button>
-                      )}
+                          <button
+                            style={{ width: 250 }}
+                            type="button"
+                            onClick={() =>
+                              arrayHelpers.insert(indexAcc + 1, {
+                                name: "",
+                                rate: 0,
+                              })
+                            }
+                          >
+                            Adicionar hospedagem
+                          </button>
+                        )}
                     </React.Fragment>
                   )
                 )
@@ -254,7 +255,7 @@ const CityForm = (props: any) => {
                           >
                             X
                           </button>
-                          <img src={img} width={200} height={200} alt="cover" />
+                          <Image src={img} width={200} height={200} alt="cover" />
                         </div>
                       )
                     )}

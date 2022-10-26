@@ -74,7 +74,7 @@ const Profile = () => {
               <S.LargeText> Viajante Redsterna</S.LargeText>
 
               <Link href="/buscar-usuarios">
-                <img
+                <Image
                   src="/images/desktop/profile/search_icon.png"
                   height={30}
                   width={30}
@@ -102,7 +102,7 @@ const Profile = () => {
                 </S.Title>
 
                 <Link href="/editar-perfil">
-                  <img
+                  <Image
                     src="/images/desktop/profile/config_icon.png"
                     height={25}
                     width={25}
@@ -111,7 +111,7 @@ const Profile = () => {
                 </Link>
               </S.HeadingContainer>
               <S.HeadingContainer>
-                <img
+                <Image
                   src="/images/desktop/profile/bag_icon.png"
                   height={35}
                   width={32}
@@ -123,7 +123,7 @@ const Profile = () => {
                     href={user.social.instagram}
                     target="_blank"
                   >
-                    <img
+                    <Image
                       src="/images/desktop/profile/insta_icon.png"
                       height={47}
                       width={53}
@@ -136,7 +136,7 @@ const Profile = () => {
                     href={user.social.facebook}
                     target="_blank"
                   >
-                    <img
+                    <Image
                       src="/images/desktop/profile/facebook_icon.png"
                       height={47}
                       width={53}
@@ -204,7 +204,7 @@ const Profile = () => {
             <S.InterestsContainer>
               <S.FollowColumn>
                 <S.InterestsHeading>
-                  <img
+                  <Image
                     src="/images/desktop/profile/bag_icon.png"
                     height={35}
                     width={32}
@@ -269,7 +269,7 @@ const Profile = () => {
                       paddingLeft: 10,
                     }}
                   >
-                    <img
+                    <Image
                       src={
                         itinerary.cover ||
                         "/images/desktop/home/redsterna_gray_logo.png"
@@ -333,7 +333,7 @@ const Profile = () => {
           <S.ItineraryContainer>
             <S.HeadingItinerary>
               <S.TitleContainer>
-                <img
+                <Image
                   src="/images/desktop/profile/bag_icon.png"
                   height={35}
                   width={32}

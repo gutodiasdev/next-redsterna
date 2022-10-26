@@ -26,6 +26,7 @@ import { Field, Formik } from "formik";
 import DeleteAccountModal from "../components/deleteItineraryModal";
 import { useUser } from "../contexts/user.context";
 import Link from 'next/link';
+import Image from 'next/image';
 
 /* eslint-disable */
 const Update = () => {
@@ -55,7 +56,7 @@ const Update = () => {
       <>
         <Button type="button" onClick={isOpen} style={{ marginTop: 25 }}>
           <Text>{props.title}</Text>
-          <img
+          <Image
             src={props.icon}
             height={15}
             width={15}
@@ -385,7 +386,7 @@ const Update = () => {
                           >
                             X
                           </button>
-                          <img
+                          <Image
                             src={values.pictures.profile}
                             width={200}
                             height={200}
@@ -426,7 +427,7 @@ const Update = () => {
                           >
                             X
                           </button>
-                          <img
+                          <Image
                             src={values.pictures.cover}
                             width={200}
                             height={200}
@@ -446,7 +447,7 @@ const Update = () => {
                 style={{ marginTop: 50 }}
               >
                 <Text>Excluir conta</Text>
-                <img
+                <Image
                   src={icons.deleteIcon}
                   height={15}
                   width={15}
