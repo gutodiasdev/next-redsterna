@@ -77,7 +77,7 @@ export default function ShowItinerary (props: any) {
           <Line style={{ marginBottom: 30 }}>
             <span style={{ marginRight: 20 }}>Avalie este roteiro </span>
             <StarRating
-              value={itinerary.rate.media / itinerary.rate.quantity}
+              value={0}
               onClick={(value: number) =>
                 onRateItinerary({ id: itinerary._id, rate: value })
               }

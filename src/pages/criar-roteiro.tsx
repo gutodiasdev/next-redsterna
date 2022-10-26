@@ -351,7 +351,7 @@ const Itinerary = () => {
                   <S.Label>Resumo da viagem</S.Label>
                   <S.TextArea
                     name="simple.summary"
-                    value={values.simple.summary}
+                    value={''}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Quais cidades você visitou? O que viu de bacana? Quais os pontos fortes e fracos? Divida suas experiências com a gente!"
