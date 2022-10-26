@@ -364,47 +364,47 @@ const Itinerary = () => {
                   </S.Description>
                   <FieldArray
                     name="simple.cities"
-                    render={(arrayHelpers) => {
-                      return values.simple.cities.length > 0 ? (
-                        values.simple.cities.map((city: any, index: any) => (
-                          <React.Fragment key={index}>
-                            <button
-                              style={{ width: 200, height: 30, marginTop: 20 }}
-                              type="button"
-                              onClick={() => arrayHelpers.remove(index)}
-                            >
-                              Remover cidade abaixo:
-                            </button>
-                            <CityForm
-                              values={values}
-                              handleChange={handleChange}
-                              handleBlur={handleBlur}
-                              city={city}
-                              index={index}
-                              arrayHelpers={arrayHelpers}
-                              setFieldValue={setFieldValue}
-                            />
-                            {values.simple.cities.length === index + 1 && (
-                              <button
-                                style={{ width: 200, height: 30 }}
-                                type="button"
-                                onClick={() => arrayHelpers.push(emptyCityData)}
-                              >
-                                Adicionar mais cidades
-                              </button>
-                            )}
-                          </React.Fragment>
-                        ))
-                      ) : (
-                        <button
-                          style={{ width: 200, height: 30 }}
-                          type="button"
-                          onClick={() => arrayHelpers.push(emptyCityData)}
-                        >
-                          Adicionar uma cidade
-                        </button>
-                      );
-                    }}
+                  // render={(arrayHelpers) => {
+                  //   return values.simple.cities.length > 0 ? (
+                  //     values.simple.cities.map((city: any, index: any) => (
+                  //       <React.Fragment key={index}>
+                  //         <button
+                  //           style={{ width: 200, height: 30, marginTop: 20 }}
+                  //           type="button"
+                  //           onClick={() => arrayHelpers.remove(index)}
+                  //         >
+                  //           Remover cidade abaixo:
+                  //         </button>
+                  //         <CityForm
+                  //           values={values}
+                  //           handleChange={handleChange}
+                  //           handleBlur={handleBlur}
+                  //           city={city}
+                  //           index={index}
+                  //           arrayHelpers={arrayHelpers}
+                  //           setFieldValue={setFieldValue}
+                  //         />
+                  //         {values.simple.cities.length === index + 1 && (
+                  //           <button
+                  //             style={{ width: 200, height: 30 }}
+                  //             type="button"
+                  //             onClick={() => arrayHelpers.push(emptyCityData)}
+                  //           >
+                  //             Adicionar mais cidades
+                  //           </button>
+                  //         )}
+                  //       </React.Fragment>
+                  //     ))
+                  //   ) : (
+                  //     <button
+                  //       style={{ width: 200, height: 30 }}
+                  //       type="button"
+                  //       onClick={() => arrayHelpers.push(emptyCityData)}
+                  //     >
+                  //       Adicionar uma cidade
+                  //     </button>
+                  //   );
+                  // }}
                   />
                   <S.Button type="submit">Salvar Roteiro</S.Button>
                 </S.FormContainer>

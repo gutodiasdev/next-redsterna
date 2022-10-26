@@ -93,9 +93,9 @@ export default function ShowItinerary (props: any) {
             <b>Resumo da viagem:</b>
           </span>
           <textarea readOnly style={{ width: 500, height: 300 }}>
-            {itinerary.simple.summary !== ""
+            {/* {itinerary.simple.summary !== ""
               ? itinerary.simple.summary
-              : "Este roteiro não possui resumo"}
+              : "Este roteiro não possui resumo"} */}
           </textarea>
           <Column>
             <b style={{ marginTop: 30 }}>Cidades visitadas:</b>
