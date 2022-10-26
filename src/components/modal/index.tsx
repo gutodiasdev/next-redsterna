@@ -7,6 +7,7 @@ import Modal from "react-modal";
 
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const LoginModal = (props: any) => {
   const { signIn } = useAuth();
@@ -120,10 +121,14 @@ const LoginModal = (props: any) => {
                 </FacebookButton> */}
                     <S.AncorWrapper>
                       {" "}
-                      <S.Ancor to="/recuperar-conta">
-                        Esqueceu sua senha?
-                      </S.Ancor>
-                      <S.Ancor to="/cadastre-se">Cadastre-se!</S.Ancor>
+                      <Link href="/recuperar-conta">
+                        <S.Ancor >
+                          Esqueceu sua senha?
+                        </S.Ancor>
+                      </Link>
+                      <Link href="/cadastre-se">
+                        <S.Ancor>Cadastre-se!</S.Ancor>
+                      </Link>
                     </S.AncorWrapper>
                   </S.FormContainer>
                 </form>
