@@ -2,21 +2,21 @@ import { Draggable, Map } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
 import { useEffect } from "react";
 import { useQuery } from 'react-query';
-import { useItineraries } from "../../contexts/itinerary.context";
+// import { useItineraries } from "../../contexts/itinerary.context";
 
 import * as C from "./styles";
 
 /* eslint-disable */
 const MapPage = (props: any) => {
-  const { listItineraries, itineraries } = useItineraries();
+  // const { listItineraries, itineraries } = useItineraries();
 
   // useEffect(() => {
   //   listItineraries();
   // }, []);
 
-  const { data, error } = useQuery(['itineraries'], listItineraries, {
-    staleTime: 1000 * 10
-  });
+  // const { data, error } = useQuery(['itineraries'], listItineraries, {
+  //   staleTime: 1000 * 10
+  // });
 
   return (
     <C.Container>

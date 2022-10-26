@@ -4,7 +4,6 @@ import * as S from "../styles/profile";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import DeleteItinerary from "../components/deleteItineraryModal";
 import StarRating from "../components/starRating";
-import { useUser } from "../contexts/user.context";
 import api from "../services/api";
 import { ColumnContainer } from "../styles/create-itineraries";
 import { useQuery } from 'react-query';
@@ -15,9 +14,26 @@ import Image from 'next/image';
 const Profile = () => {
   const [itineraries, setItineraries] = useState<any>([]);
   const [favoriteItineraries, setFavoriteItineraries] = useState<any>([]);
-  const { user, getUserData } = useUser();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [itinerary, setItinerary] = useState({});
+
+  const user = {
+    _id: '',
+    following: [],
+    pictures: {
+      cover: '',
+      profile: ''
+    },
+    ranking: '',
+    social: {
+      instagram: '',
+      facebook: ''
+    },
+    firstname: '',
+    lastname: '',
+    followers: [],
+    about: ''
+  };
 
   const DEFAULT_TEXT =
     "Viajante RedSterna que busca viver e compartilhar experiências incríveis ao redor do mundo! Siga-me para acompanhar minha jornada.";
@@ -52,7 +68,6 @@ const Profile = () => {
   };
 
   const { data } = useQuery([user._id, 'data'], async () => {
-    await getUserData();
     await getItineraries();
     await getFavoriteItineraries();
   }, {
@@ -180,7 +195,7 @@ const Profile = () => {
 
               <S.RowContainer>
                 <S.FollowColumn>
-                  {user.followers > 0 ? (
+                  {user.followers.length > 0 ? (
                     <>
                       {" "}
                       <S.Text>Seguidores</S.Text>

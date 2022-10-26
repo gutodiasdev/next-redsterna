@@ -5,7 +5,7 @@ import { createGlobalStyle } from "styled-components";
 import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import RootProvider from "../contexts/index";
+import { ItinerariesProvider } from '../contexts/itinerary.context';
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -40,11 +40,11 @@ export default function App ({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <ChakraProvider>
-          <RootProvider>
+          <ItinerariesProvider>
             <GlobalStyle />
             <ToastContainer />
             <Component {...pageProps} />
-          </RootProvider>
+          </ItinerariesProvider>
         </ChakraProvider>
       </RecoilRoot>
     </QueryClientProvider >

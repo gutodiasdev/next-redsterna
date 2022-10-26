@@ -2,7 +2,6 @@ import * as S from "./style";
 
 import { Formik, Field } from "formik";
 
-import { useAuth } from "../../contexts/auth.context";
 import Modal from "react-modal";
 
 import { useRouter } from 'next/router';
@@ -10,7 +9,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const LoginModal = (props: any) => {
-  const { signIn } = useAuth();
   const router = useRouter();
 
   const customStyles = {
@@ -78,9 +76,9 @@ const LoginModal = (props: any) => {
               }}
               validate={validate}
               onSubmit={async (values) => {
-                signIn(values).then(() => {
-                  router.push('/minha-conta');
-                });
+                // signIn(values).then(() => {
+                //   router.push('/minha-conta');
+                // });
               }
               }
             >

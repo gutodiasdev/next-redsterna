@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FieldArray } from "formik";
 
-import { useItineraries } from "../../contexts/itinerary.context";
-
 import * as S from "./style";
 import StarRating from "../starRating";
 import Image from 'next/image';
+import { useItineraries } from '../../contexts/itinerary.context';
 
 const CityForm = (props: any) => {
   const { index, handleChange, handleBlur, values, setFieldValue }: any = props;

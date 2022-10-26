@@ -1,21 +1,11 @@
 import Link from 'next/link';
 import { useEffect, useState } from "react";
-import { useUser } from "../contexts/user.context";
 import * as S from "../styles/user-search";
 
 const UserSearch = () => {
   const [search, setSearch] = useState("");
 
   const [users, setUsers] = useState<any>([]);
-
-  const { listUsers } = useUser();
-
-  useEffect(() => {
-    (async () => {
-      const response = await listUsers();
-      setUsers(response);
-    })();
-  }, [listUsers]);
 
   const filteredUsers =
     search.length > 0

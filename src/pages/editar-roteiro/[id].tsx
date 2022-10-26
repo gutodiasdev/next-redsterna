@@ -6,8 +6,6 @@ import { Formik, Field, FieldArray } from "formik";
 
 import api from "../../services/api";
 
-import { useItineraries } from "../../contexts/itinerary.context";
-
 import CityForm from "../../components/cities";
 
 import * as S from "../../styles/update-itineraries";
@@ -15,6 +13,7 @@ import * as S from "../../styles/update-itineraries";
 import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from 'next/image';
+import { useItineraries } from '../../contexts/itinerary.context';
 
 const Itinerary = (props: any) => {
   const { uploadFile } = useItineraries();

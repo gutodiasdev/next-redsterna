@@ -2,15 +2,13 @@ import { Field, FieldArray, Formik, useFormikContext } from "formik";
 import React from "react";
 import { toast } from "react-toastify";
 
-import { useItineraries } from "../contexts/itinerary.context";
-import { useUser } from "../contexts/user.context";
-
 import CityForm from "../components/cities";
 
 import "react-toastify/dist/ReactToastify.css";
 import * as S from "../styles/create-itineraries";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { useItineraries } from '../contexts/itinerary.context';
 
 const FormikObserver = () => {
   const { values } = useFormikContext();
@@ -24,8 +22,12 @@ const FormikObserver = () => {
 /* eslint-disable */
 const Itinerary = () => {
   const { uploadFile } = useItineraries();
-  const { user } = useUser();
   const router = useRouter();
+
+  //temporary
+  const user = {
+    _id: ''
+  };
 
   const formEmptyValues = {
     author: user._id,

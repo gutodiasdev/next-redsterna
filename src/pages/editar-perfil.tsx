@@ -24,14 +24,11 @@ import {
 
 import { Field, Formik } from "formik";
 import DeleteAccountModal from "../components/deleteItineraryModal";
-import { useUser } from "../contexts/user.context";
 import Link from 'next/link';
 import Image from 'next/image';
 
 /* eslint-disable */
 const Update = () => {
-  const { updateUser, user, uploadFile } = useUser();
-
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const icons = {
@@ -40,10 +37,11 @@ const Update = () => {
   };
 
   const uploadFileCallback = async (file: any) => {
-    const response = await uploadFile(file);
-
-    return response;
   };
+
+  //temporary
+  const user: any = {};
+  const erros: any = {};
 
   const Collapse = (props: any) => {
     const visible = true;
@@ -130,7 +128,6 @@ const Update = () => {
           }}
           // validate={validate}
           onSubmit={async (values, { setSubmitting }) => {
-            await updateUser(values);
           }}
         >
           {({
@@ -157,7 +154,7 @@ const Update = () => {
                       onBlur={handleBlur}
                       value={values.firstname}
                     />
-                    {errors.firstname && <span>{errors.firstname}</span>}
+                    {errors.firstname && <span>{ }</span>}
 
                     <Label>Sobrenome</Label>
                     <Field
@@ -168,7 +165,7 @@ const Update = () => {
                       onBlur={handleBlur}
                       value={values.lastname}
                     />
-                    {errors.lastname && <span>{errors.lastname}</span>}
+                    {errors.lastname && <span>{ }</span>}
 
                     <Label>Data de Nascimento</Label>
                     <Field
@@ -179,7 +176,7 @@ const Update = () => {
                       onBlur={handleBlur}
                       value={values.birthdate}
                     />
-                    {errors.birthdate && <span>{errors.birthdate}</span>}
+                    {errors.birthdate && <span>{ }</span>}
 
                     <Label>Gênero</Label>
                     <Field
@@ -192,7 +189,7 @@ const Update = () => {
                       <option value="NB">Não binário</option>
                       <option value="AN">Outro</option>
                     </Field>
-                    {errors.gender && <span>{errors.gender}</span>}
+                    {errors.gender && <span>{ }</span>}
                   </EditForm>
                 }
                 icon={icons.editIcon}
@@ -306,7 +303,7 @@ const Update = () => {
                       onBlur={handleBlur}
                       value={values.email}
                     />
-                    {errors.email && <span>{errors.email}</span>}
+                    {errors.email && <span>{ }</span>}
                   </EditForm>
                 }
                 icon={icons.editIcon}

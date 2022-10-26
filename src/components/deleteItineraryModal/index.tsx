@@ -19,35 +19,35 @@ const DeleteItinerary = (props: any) => {
     },
   };
 
-  async function setDeleteAccount(id: string) {
-    try {
-      await api.delete(`/itineraries?id=${id}`);
+  // async function setDeleteAccount(id: string) {
+  //   try {
+  //     await api.delete(`/itineraries?id=${id}`);
 
-      toast.success("Roteiro excluído com sucesso!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+  //     toast.success("Roteiro excluído com sucesso!", {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: false,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "dark",
+  //     });
 
-      setTimeout(() => window.location.reload(), 3500);
-    } catch {
-      toast.error("Não foi possível remover esse roteiro", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    }
-  }
+  //     setTimeout(() => window.location.reload(), 3500);
+  //   } catch {
+  //     toast.error("Não foi possível remover esse roteiro", {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: false,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "dark",
+  //     });
+  //   }
+  // }
 
   return (
     <div>
@@ -80,10 +80,9 @@ const DeleteItinerary = (props: any) => {
               </S.RowContainer>
               <S.SummaryContainer>
                 <S.RowLabel>Resumo da viagem</S.RowLabel>
-                {`${
-                  props.itinerary.simpĺe?.summary ||
+                {`${props.itinerary.simpĺe?.summary ||
                   "Poxa! Nenhum roteiro adicionado :c"
-                }`}
+                  }`}
               </S.SummaryContainer>
             </S.ColumnContainer>
 
@@ -93,7 +92,7 @@ const DeleteItinerary = (props: any) => {
               </S.CancelButton>
               <S.DeleteButton
                 onClick={() => {
-                  setDeleteAccount(props.itinerary._id);
+                  // setDeleteAccount(props.itinerary._id);
                 }}
               >
                 Excluir

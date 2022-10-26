@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import { useAuth } from "../contexts/auth.context";
-import { useUser } from "../contexts/user.context";
 import {
   Button,
   Checkbox,
@@ -31,15 +29,7 @@ import {
 
 /* eslint-disable */
 const Register = () => {
-  const { signUp } = useAuth();
-  const { uploadFile } = useUser();
   const router = useRouter();
-
-  const uploadFileCallback = async (file: any) => {
-    const response = await uploadFile(file);
-
-    return response;
-  };
 
   const validate = (values: any) => {
     const errors: any = {};
@@ -107,32 +97,7 @@ const Register = () => {
         }}
         // validate={validate}
         onSubmit={async (values, { setSubmitting }) => {
-          await signUp(values).then(() => {
-            try {
-              toast.success("Conta criada com sucesso!", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              setTimeout(() => router.push("/"), 3500);
-            } catch (e) {
-              toast.error("Não foi possível editar os dados, tente novamente", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-            }
-          });
+
         }}
       >
         {({
@@ -305,11 +270,7 @@ const Register = () => {
               <Label>Foto de Pefil</Label>
               <FileInput
                 type="file"
-                onChange={async (e: any) =>
-                  await uploadFileCallback(e.target.files[0]).then((response) =>
-                    setFieldValue("pictures.profile", response)
-                  )
-                }
+                onChange={async (e: any) => { }}
               />
               {values.pictures.profile && values.pictures.profile !== "" && (
                 <div
@@ -345,11 +306,7 @@ const Register = () => {
               <Label>Foto de Capa</Label>
               <FileInput
                 type="file"
-                onChange={async (e: any) =>
-                  await uploadFileCallback(e.target.files[0]).then((response) =>
-                    setFieldValue("pictures.cover", response)
-                  )
-                }
+                onChange={async (e: any) => { }}
               />
               {values.pictures.cover && values.pictures.cover !== "" && (
                 <div
