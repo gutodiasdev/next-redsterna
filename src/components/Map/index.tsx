@@ -25,6 +25,7 @@ const MapPage = (props: any) => {
         height={props.height || 500}
         defaultCenter={[-23, -10]}
         defaultZoom={3}
+        width={1366}
       >
         {/* {itineraries.map((itinerary: any) => {
           return itinerary.simple.cities.map(

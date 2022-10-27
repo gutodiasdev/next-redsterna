@@ -103,9 +103,9 @@ export const RoadmapText = styled.p`
   color: #fff;
   display: flex;
   width: 11.1%;
-  margin-left: 18%;
+  margin-left: 25%;
   font-weight: bold;
-  margin-top: 2%;
+  margin-top: 4%;
   font-size: 16px;
   line-height: 1.42857143;
   font-family: MontserratRegular;

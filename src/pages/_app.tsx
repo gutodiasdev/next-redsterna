@@ -1,4 +1,6 @@
 import type { AppProps } from 'next/app';
+import { SessionProvider } from "next-auth/react";
+import { Session } from "next-auth";
 import { ChakraProvider } from '@chakra-ui/react';
 import { ToastContainer } from "react-toastify";
 import { createGlobalStyle } from "styled-components";
@@ -6,6 +8,8 @@ import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { ItinerariesProvider } from '../contexts/itinerary.context';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -35,18 +39,22 @@ a {
 
 const queryClient = new QueryClient();
 
-export default function App ({ Component, pageProps }: AppProps) {
+export default function App ({ Component, pageProps }: AppProps<{ session: Session; }>) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <ChakraProvider>
-          <ItinerariesProvider>
-            <GlobalStyle />
-            <ToastContainer />
-            <Component {...pageProps} />
-          </ItinerariesProvider>
-        </ChakraProvider>
-      </RecoilRoot>
-    </QueryClientProvider >
+    <SessionProvider session={pageProps.session}>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <ChakraProvider>
+            <ItinerariesProvider>
+              <GlobalStyle />
+              <ToastContainer />
+              <Header />
+              <Component {...pageProps} />
+              <Footer />
+            </ItinerariesProvider>
+          </ChakraProvider>
+        </RecoilRoot>
+      </QueryClientProvider >
+    </SessionProvider>
   );
 }
