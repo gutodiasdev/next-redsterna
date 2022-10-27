@@ -5,7 +5,7 @@ import {
   useDisclosure,
   Button
 } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { LoginModal } from "../LoginModal";
@@ -127,15 +127,33 @@ const Header = () => {
           ) : (
             <>
               <Link href="/minha-conta">
-                <Image
-                  height={30}
-                  width={30}
-                  src="/images/login_icon.png"
-                  alt="Ícone de duas pessoas"
-                />
-                Minha Conta
+                <Button
+                  variant={'ghost'}
+                  fontWeight={'normal'}
+                  leftIcon={
+                    <Image
+                      height={30}
+                      width={30}
+                      src="/images/login_icon.png"
+                      alt="Ícone de duas pessoas"
+                    />
+                  }
+                  _hover={{
+                    background: 'none'
+                  }}
+                >
+                  Minha Conta
+                </Button>
               </Link>
-              <Button onClick={() => { }} rightIcon={<IoIosLogOut />}>
+              <Button
+                variant={'ghost'}
+                fontWeight={'normal'}
+                onClick={() => signOut()}
+                rightIcon={<IoIosLogOut />}
+                _hover={{
+                  background: 'none'
+                }}
+              >
                 Sair
               </Button>
             </>
