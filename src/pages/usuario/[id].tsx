@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import * as S from "../../styles/user";
 
-import api from "../../services/api";
+import { api } from "../../services/api";
 import { ColumnContainer } from "../../styles/create-itineraries";
 import StarRating from "../../components/starRating";
 import Image from 'next/image';
