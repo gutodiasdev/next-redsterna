@@ -1,13 +1,13 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
-import api from "../services/api";
+import { api } from "../services/api";
 
 interface ItinerariesContextData {
-  uploadFile(file: any): Promise<string>;
-  listItineraries(): Promise<void>;
-  favoriteItinerary(id: string): Promise<void>;
-  rateItinerary({ id, rate }: { id: string; rate: number }): Promise<void>;
+  uploadFile (file: any): Promise<string>;
+  listItineraries (): Promise<void>;
+  favoriteItinerary (id: string): Promise<void>;
+  rateItinerary ({ id, rate }: { id: string; rate: number; }): Promise<void>;
   itineraries: any;
 }
 
@@ -66,7 +66,7 @@ export const ItinerariesProvider = ({ children }: any) => {
     }
   };
 
-  const rateItinerary = async ({ id, rate }: { id: string; rate: number }) => {
+  const rateItinerary = async ({ id, rate }: { id: string; rate: number; }) => {
     try {
       const response = await api.post("/itineraries/rate", {
         id: id,
@@ -112,7 +112,7 @@ export const ItinerariesProvider = ({ children }: any) => {
   );
 };
 
-export function useItineraries(): ItinerariesContextData {
+export function useItineraries (): ItinerariesContextData {
   const context = useContext(ItinerariesContext);
 
   return context;
