@@ -32,7 +32,7 @@ function setupAPIClient () {
     });
   } else {
     return axios.create({
-      baseURL: "https://redsterna-dev.herokuapp.com",
+      baseURL: "https://next-redsterna.vercel.app/api",
     });
   }
 
