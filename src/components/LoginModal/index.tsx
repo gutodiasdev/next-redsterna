@@ -14,7 +14,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -22,7 +23,9 @@ import * as yup from 'yup';
 import { useMutation } from 'react-query';
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
-import { signIn, } from 'next-auth/react';
+import { signIn as nextAuthSignIn } from 'next-auth/react';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 
 type LoginModalProps = {
   isOpen: boolean,
@@ -40,16 +43,19 @@ const loginSchema = yup.object().shape({
 });
 
 export function LoginModal ({ isOpen, onClose }: LoginModalProps) {
+  const { signIn } = useContext(AuthContext);
+  const toast = useToast();
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginProps>({
     resolver: yupResolver(loginSchema)
   });
 
-  const mutationLogin = useMutation(async (values: LoginProps) => {
-    // await signIn(values);
-    signIn('email');
-  }, {
+  const mutationLogin = useMutation(signIn, {
     onSuccess: () => {
-      window.location.reload();
+      toast({
+        status: 'success',
+        title: 'Usuário logado com sucesso'
+      });
     }
   });
 
@@ -108,7 +114,7 @@ export function LoginModal ({ isOpen, onClose }: LoginModalProps) {
                 border={'1px'}
                 aria-label='Google login'
                 leftIcon={<FcGoogle />}
-                onClick={() => signIn('google')}
+                onClick={() => nextAuthSignIn('google')}
               >
                 Continuar com Google
               </Button>

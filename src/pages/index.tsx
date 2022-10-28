@@ -9,8 +9,9 @@ import {
   TipBanner,
   TipsText,
 } from "../styles/home";
+import { withSSRGuest } from '../utils/withSSRGuest';
 
-const Home = () => {
+export default function Home () {
   return (
     <Container>
       <MapPage height={300} />
@@ -109,4 +110,9 @@ const Home = () => {
   );
 };
 
-export default Home;
+
+export const getServerSideProps = withSSRGuest(async (ctx) => {
+  return {
+    props: {}
+  };
+});

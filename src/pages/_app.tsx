@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ItinerariesProvider } from '../contexts/itinerary.context';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { AuthProvider } from '../contexts/AuthContext';
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -42,19 +43,21 @@ const queryClient = new QueryClient();
 export default function App ({ Component, pageProps }: AppProps<{ session: Session; }>) {
   return (
     <SessionProvider session={pageProps.session}>
-      <QueryClientProvider client={queryClient}>
-        <RecoilRoot>
-          <ChakraProvider>
-            <ItinerariesProvider>
-              <GlobalStyle />
-              <ToastContainer />
-              <Header />
-              <Component {...pageProps} />
-              <Footer />
-            </ItinerariesProvider>
-          </ChakraProvider>
-        </RecoilRoot>
-      </QueryClientProvider >
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <RecoilRoot>
+            <ChakraProvider>
+              <ItinerariesProvider>
+                <GlobalStyle />
+                <ToastContainer />
+                <Header />
+                <Component {...pageProps} />
+                <Footer />
+              </ItinerariesProvider>
+            </ChakraProvider>
+          </RecoilRoot>
+        </QueryClientProvider >
+      </AuthProvider>
     </SessionProvider>
   );
 }

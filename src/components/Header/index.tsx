@@ -11,14 +11,23 @@ import Link from 'next/link';
 import { LoginModal } from "../LoginModal";
 import { IoIosLogOut } from 'react-icons/io';
 import { BiUser } from 'react-icons/bi';
+import Head from 'next/head';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Header = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { user } = useContext(AuthContext);
+
+  console.log(user);
 
   const { data: session } = useSession();
 
   return (
     <>
+      <Head>
+        <link rel="shortcut icon" href="./images/pin.png" type="image/x-icon" />
+      </Head>
       <Grid
         templateColumns={'300px 1fr'}
         px={'16px'}

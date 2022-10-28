@@ -4,15 +4,16 @@ import * as S from "../styles/profile";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import DeleteItinerary from "../components/deleteItineraryModal";
 import StarRating from "../components/starRating";
-import api from "../services/api";
 import { ColumnContainer } from "../styles/create-itineraries";
 import { useQuery } from 'react-query';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Flex } from '@chakra-ui/react';
+import { withSSRAuth } from '../utils/withSSRAuth';
+import { api } from '../services/api';
 
 /* eslint-disable */
-const Profile = () => {
+export default function Profile () {
   const [itineraries, setItineraries] = useState<any>([]);
   const [favoriteItineraries, setFavoriteItineraries] = useState<any>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -475,4 +476,8 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export const getServerSideProps = withSSRAuth(async (ctx) => {
+  return {
+    props: {}
+  };
+});

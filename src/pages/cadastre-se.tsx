@@ -16,11 +16,12 @@ import { AxiosError } from 'axios';
 import { signIn } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { useMutation } from 'react-query';
 import * as yup from 'yup';
-import { registerUser } from '../services/registerUser';
+import { AuthContext } from '../contexts/AuthContext';
 
 type RegisterFormProps = {
   email: string;
@@ -37,12 +38,13 @@ const registerFormSchema = yup.object().shape({
 const Register = () => {
   const router = useRouter();
   const toast = useToast();
+  const { signUpRedSterna } = useContext(AuthContext);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormProps>({
     resolver: yupResolver(registerFormSchema)
   });
 
-  const mutation = useMutation(registerUser, {
+  const mutation = useMutation(signUpRedSterna, {
     onError: (e: AxiosError | any) => {
       toast({
         title: e.response?.data.msg,
