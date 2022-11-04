@@ -9,7 +9,7 @@ export function withSSRGuest<P extends { [key: string]: any; }> (fn: GetServerSi
     if (cookies['redsterna.token']) {
       return {
         redirect: {
-          destination: '/minha-conta',
+          destination: '/my-account',
           permanent: false,
         }
       };

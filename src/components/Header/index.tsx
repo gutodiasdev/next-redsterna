@@ -5,7 +5,7 @@ import {
   useDisclosure,
   Button
 } from '@chakra-ui/react';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { LoginModal } from "../LoginModal";
@@ -14,13 +14,13 @@ import { BiUser } from 'react-icons/bi';
 import Head from 'next/head';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { parseCookies } from 'nookies';
 
-const Header = () => {
+export function Header () {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { user } = useContext(AuthContext);
+  const { signOut } = useContext(AuthContext);
 
-  console.log(user);
-
+  const cookies = parseCookies();
   const { data: session } = useSession();
 
   return (
@@ -100,7 +100,7 @@ const Header = () => {
               Dicas de Viagem
             </Button>
           </Link>
-          {!session ? (
+          {!session && !cookies['redsterna.token'] ? (
             <>
               <Link href="/cadastre-se">
                 <Button
@@ -173,5 +173,3 @@ const Header = () => {
     </>
   );
 };
-
-export default Header;

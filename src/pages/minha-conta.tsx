@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as S from "../styles/profile";
 
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
@@ -8,9 +8,11 @@ import { ColumnContainer } from "../styles/create-itineraries";
 import { useQuery } from 'react-query';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Flex } from '@chakra-ui/react';
+import { Flex, HStack, Spinner } from '@chakra-ui/react';
+import { api } from '../services/apiClient';
+import { AuthContext } from '../contexts/AuthContext';
 import { withSSRAuth } from '../utils/withSSRAuth';
-import { api } from '../services/api';
+
 
 /* eslint-disable */
 export default function Profile () {
@@ -19,9 +21,12 @@ export default function Profile () {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [itinerary, setItinerary] = useState({});
 
+  const { user: userData } = useContext(AuthContext);
+
   const user = {
     _id: '',
     following: [],
+    followers: [],
     pictures: {
       cover: '',
       profile: ''
@@ -33,7 +38,6 @@ export default function Profile () {
     },
     firstname: '',
     lastname: '',
-    followers: [],
     about: ''
   };
 
@@ -57,24 +61,23 @@ export default function Profile () {
     );
   };
 
-  const getItineraries = async (): Promise<void> => {
-    const response = await api.get("/itineraries/user");
+  const { data, isLoading, error } = useQuery([user._id, 'data'], async () => {
+    const { data: itineraries } = await api.get(`/itineraries/user/${String(userData?.id)}`);
+    const { data: userProfile } = await api.get(`/user/profile/${String(userData?.id)}`);
+    const { data: followers } = await api.get(`/user/followersFrom/${String(userData?.id)}`);
+    const { data: followees } = await api.get(`/user/followeesFrom/${String(userData?.id)}`);
 
-    setItineraries(response.data);
-  };
-
-  const getFavoriteItineraries = async (): Promise<void> => {
-    const response = await api.get("/user/favorite/itinerary");
-
-    setFavoriteItineraries(response.data);
-  };
-
-  const { data } = useQuery([user._id, 'data'], async () => {
-    await getItineraries();
-    await getFavoriteItineraries();
+    return {
+      itineraries: itineraries.itineraries,
+      user: userProfile,
+      followers: followers,
+      followees: followees,
+    };
   }, {
     staleTime: 1000 * 10
   });
+
+  console.log(data);
 
   return (
     <>
@@ -120,7 +123,7 @@ export default function Profile () {
                   <S.Title>
                     Bem-vindo,{" "}
                     <S.UserName>
-                      {user.firstname} {user.lastname}!
+                      {isLoading ? (<Spinner />) : (data?.user.name)}!
                     </S.UserName>
                   </S.Title>
 
@@ -170,11 +173,11 @@ export default function Profile () {
                   about
                   <S.Section>
                     <S.Destination>
-                      <S.SmallText>0</S.SmallText>
+                      <S.SmallText>{isLoading ? (<Spinner />) : (data?.itineraries.length)}</S.SmallText>
                       <S.SmallText>Destino</S.SmallText>
                     </S.Destination>
                     <S.Itinerary>
-                      <S.SmallText>{itineraries.length}</S.SmallText>
+                      <S.SmallText>{isLoading ? (<Spinner />) : (data?.itineraries.length)}</S.SmallText>
                       <S.SmallText>Roteiros</S.SmallText>
                     </S.Itinerary>
                   </S.Section>
@@ -203,23 +206,12 @@ export default function Profile () {
 
                 <S.RowContainer>
                   <S.FollowColumn>
-                    {user.followers.length > 0 ? (
-                      <>
-                        {" "}
-                        <S.Text>Seguidores</S.Text>
-                        <S.Counter>
-                          {String(user.followers) || "0"}
-                        </S.Counter>{" "}
-                      </>
-                    ) : (
-                      <S.Text>Nenhum seguidor ainda</S.Text>
-                    )}
-                  </S.FollowColumn>
-
-                  <S.FollowColumn>
                     <S.Text>Seguindo</S.Text>
-
-                    <S.Counter>{user.following.length}</S.Counter>
+                    <S.Counter>{isLoading ? (<Spinner />) : (data?.followees.length)}</S.Counter>
+                  </S.FollowColumn>
+                  <S.FollowColumn>
+                    <S.Text>Seguidores</S.Text>
+                    <S.Counter>{isLoading ? (<Spinner />) : (data?.followers.length)}</S.Counter>
                   </S.FollowColumn>
                 </S.RowContainer>
               </S.FollowGroupContainer>
@@ -273,16 +265,12 @@ export default function Profile () {
                 </Link>
               </S.HeadingItinerary>
               <S.Divider />
-              {itineraries.length > 0 ? (
-                itineraries.map((itinerary: any, index: any) => (
-                  <div
-                    key={index}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                    }}
+              {isLoading ? (<Spinner />) : data?.itineraries.length > 0 ? (
+                data?.itineraries.map((itinerary: any, index: any) => (
+                  <Flex
+                    w={'100%'}
+                    justifyContent={'space-between'}
+                    paddingBottom={'16px'}
                   >
                     <div
                       style={{
@@ -325,28 +313,22 @@ export default function Profile () {
                         <p style={{ fontSize: 11 }}>Ainda não há avaliações</p>
                       )}
                     </ColumnContainer>
-                    <ColumnContainer>
-                      {/* <Link
-                      to={{
-                        pathname: `editar-roteiro/${itinerary._id}`,
-                        state: { itinerary },
-                      }}
-                    > */}
+                    <HStack spacing={'16px'}>
                       <Link
-                        href={`editar-roteiro/${itinerary._id}`}
+                        href={`editar-roteiro/${itinerary.id}`}
                       >
-                        <AiFillEdit size={20} color="red" />
+                        <AiFillEdit size={16} />
                       </Link>
                       <AiFillDelete
-                        size={20}
+                        size={16}
                         color="red"
                         onClick={() => {
                           setItinerary(itinerary);
                           setIsModalVisible(true);
                         }}
                       />
-                    </ColumnContainer>
-                  </div>
+                    </HStack>
+                  </Flex>
                 ))
               ) : (
                 <S.SmallText>Nenhum roteiro publicado</S.SmallText>

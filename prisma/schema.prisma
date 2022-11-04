@@ -3,8 +3,19 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model ItineraryComment {
+  id      String @id @default(uuid())
+  content String
+
+  itineraryId String
+  itinarary   Itineraries @relation(fields: [itineraryId], references: [id])
+
+  author String
+  user   User   @relation(fields: [author], references: [id])
 }
 
 model ItinerariesRate {
@@ -62,8 +73,8 @@ model UsersPictures {
   cover   String
   profile String
 
-  userProfileId String      @unique
-  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
+  userProfileId String @unique
+  userProfile   User   @relation(fields: [userProfileId], references: [id])
 }
 
 model UsersSocial {
@@ -71,20 +82,20 @@ model UsersSocial {
   facebook  String
   instagram String
 
-  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
-  userProfileId String      @unique
+  userProfile   User   @relation(fields: [userProfileId], references: [id])
+  userProfileId String @unique
 }
 
 model Itineraries {
   id        String              @id @default(uuid())
-  v         Int                 @map("__v")
+  // v         Int                 @map("__v")
   author    String
   cover     String?
-  createdAt DateTime            @db.Date
+  createdAt DateTime            @default(now())
   days      Int
   interests String[]
   made      Boolean
-  rate      ItinerariesRate?
+  rate      Int
   simple    ItinerariesSimple[]
   spent     String
   title     String
@@ -92,9 +103,11 @@ model Itineraries {
   model     String
 
   roadmaps ItinerariesOnRoadmaps[]
+  comments ItineraryComment[]
 
-  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
-  userProfileId String
+  user User @relation(fields: [author], references: [id])
+
+  ItinerariesRate ItinerariesRate?
 }
 
 model Roadmaps {
@@ -120,12 +133,12 @@ model RoadmapComment {
   roadmap   Roadmaps @relation(fields: [roadmapId], references: [id])
   roadmapId String
 
-  createdBy     UserProfile @relation(fields: [userProfileId], references: [id])
-  userProfileId String
+  author String
+  user   User   @relation(fields: [author], references: [id])
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String  @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -144,7 +157,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -152,13 +165,35 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                  String             @id @default(uuid())
+  name                String?
+  email               String?            @unique
+  emailVerified       DateTime?
+  image               String?
+  firstname           String?
+  lastname            String?
+  gender              String?
+  pictures            UsersPictures?
+  social              UsersSocial?
+  about               String?
+  birthdate           String?
+  confirmPolicy       Boolean            @default(false)
+  country             String?
+  ranking             String?
+  follows             Follows[]
+  interests           String[]
+  itineraries         Itineraries[]
+  username            String?            @unique
+  roadmapsComments    RoadmapComment[]
+  itinerariesComments ItineraryComment[]
+  password            String?
+  favorites           Json?
+  refreshToken        RefreshToken?
+
+  accounts Account[]
+  sessions Session[]
+
+  role ROLE @default(user)
 }
 
 model VerificationToken {
@@ -169,202 +204,25 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model RefreshToken {
+  id        String @id @default(uuid())
+  expiresIn Int
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String @unique
+
+  @@map("refresh_token")
+}
+
 model Follows {
   id         String @id @default(uuid())
   followerId String
   followeeId String
 
-  follower UserProfile @relation(fields: [followerId], references: [id])
+  follower User @relation(fields: [followerId], references: [id], onDelete: Cascade)
 }
 
-model UserProfile {
-  id               String           @id @default(uuid())
-  firstname        String?
-  lastname         String?
-  gender           String?
-  pictures         UsersPictures?
-  social           UsersSocial?
-  about            String?
-  birthdate        String?
-  confirmPolicy    Boolean          @default(false)
-  country          String?
-  ranking          String?
-  follows          Follows[]
-  interests        String[]
-  itineraries      Itineraries[]
-  uniqueIdentifier String?          @unique
-  RoadmapComment   RoadmapComment[]
-  password         String?
-  favorites        Json?
+enum ROLE {
+  admin
+  manager
+  user
 }
-
-// MONGODB PROVIDER //
-
-// model ItinerariesRate {
-//   media    Int
-//   quantity Int
-// }
-
-// model ItinerariesSimple {
-//   cities  ItinerariesSimpleCities[]
-//   summary String?
-// }
-
-// model ItinerariesSimpleCities {
-//   id             String                                 
-//   accommodations ItinerariesSimpleCitiesAccommodations[]
-//   coordinates    ItinerariesSimpleCitiesCoordinates
-//   description    String
-//   images         String[]
-//   name           String
-//   rate           Int
-// }
-
-// model ItinerariesSimpleCitiesAccommodations {
-//   id   String
-//   name String
-//   rate Int
-// }
-
-// model ItinerariesSimpleCitiesCoordinates {
-//   latitude  Json
-//   longitude Json
-// }
-
-// model UsersPictures {
-//   cover   String
-//   profile String
-// }
-
-// model UsersSocial {
-//   facebook  String
-//   instagram String
-// }
-
-// model Itineraries {
-//   id        String            @id @default(uuid())
-//   v         Int               @map("__v")
-//   author    String            
-//   cover     String?
-//   createdAt DateTime          @db.Date
-//   days      Int
-//   interests String[]
-//   made      Boolean
-//   rate      ItinerariesRate?
-//   simple    ItinerariesSimple
-//   spent     String
-//   title     String
-//   tripDate  String
-//   model      String
-
-//   roadmaps    Roadmaps[] @relation(fields: [roadMapsIds], references: [id])
-//   roadMapsIds String[]   
-
-//   userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
-//   userProfileId String      
-// }
-
-// model Roadmaps {
-//   id       String           @id @default(uuid())
-//   comments RoadmapComment[]
-
-//   itineraries    Itineraries[] @relation(fields: [itinerariesIds], references: [id])
-//   itinerariesIds String[]      
-// }
-
-// model RoadmapComment {
-//   id        String   @id @default(uuid())
-//   roadmap   Roadmaps @relation(fields: [roadmapId], references: [id])
-//   roadmapId String   
-//   createdBy User     @relation(fields: [userId], references: [id])
-//   userId    String   
-// }
-
-// model resetToken {
-//   id        String    @id @default(uuid())
-//   v         Int       @map("__v")
-//   expiresAt DateTime  @db.Date
-//   token     String
-//   usedAt    DateTime? @db.Date
-// }
-
-// model Account {
-//   id                String  @id @default(uuid())
-//   userId            String  
-//   model              String
-//   provider          String
-//   providerAccountId String
-//   refresh_token     String?
-//   access_token      String?
-//   expires_at        Int?
-//   token_type        String?
-//   scope             String?
-//   id_token          String?
-//   session_state     String?
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   @@unique([provider, providerAccountId])
-// }
-
-// model Session {
-//   id           String   @id @default(uuid())
-//   sessionToken String   @unique
-//   userId       String   
-//   expires      DateTime
-//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-// }
-
-// model User {
-//   id               String           @id @default(uuid())
-//   name             String?
-//   email            String?          @unique
-//   uniqueIdentifier String?          @unique
-//   password         String?
-//   emailVerified    DateTime?
-//   image            String?
-//   accounts         Account[]
-//   sessions         Session[]
-//   userProfile      UserProfile?
-//   createdAt        DateTime?        @default(now()) @db.Date
-//   updatedAt        DateTime?        @updatedAt
-//   RoadmapComment   RoadmapComment[]
-// }
-
-// model UserProfile {
-//   id            String         @id @default(uuid())
-//   firstname     String?
-//   lastname      String?
-//   gender        String?
-//   pictures      UsersPictures?
-//   social        UsersSocial?
-//   about         String?
-//   birthdate     String?
-//   confirmPolicy Boolean        @default(false)
-//   country       String?
-//   ranking       String?
-//   follows       Follows[]
-//   interests     String[]
-//   itineraries   Itineraries[]
-//   favorites     Json?
-
-//   userId String @unique
-//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-// }
-
-// model Follows {
-//   id         String @id @default(uuid())
-//   followerId String 
-//   followeeId String 
-
-//   follower UserProfile @relation(fields: [followerId], references: [id])
-// }
-
-// model VerificationToken {
-//   id         String   @id @default(uuid())
-//   identifier String
-//   token      String   @unique
-//   expires    DateTime
-
-//   @@unique([identifier, token])
-// }

@@ -31,9 +31,9 @@ export const ItinerariesProvider = ({ children }: any) => {
   const listItineraries = async () => {
     const response = await api.get("/itineraries/all");
 
-    setItineraries(response.data);
+    // setItineraries(response.data);
 
-    return;
+    return response.data;
   };
 
   const favoriteItinerary = async (id: string) => {

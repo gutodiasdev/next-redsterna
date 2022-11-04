@@ -25,12 +25,14 @@ import { AuthContext } from '../contexts/AuthContext';
 
 type RegisterFormProps = {
   email: string;
+  name: string;
   password: string;
   passwordConfirmation: string;
 };
 
 const registerFormSchema = yup.object().shape({
   email: yup.string().email('Insira um email válido.').required('Email é obrigatório.'),
+  name: yup.string().required('Nome é obrigatório.'),
   password: yup.string().min(6, 'Senha precisar ter no mínimo 6 caracteres.').required('Senha é obrigatório.'),
   passwordConfirmation: yup.string().oneOf([yup.ref('password')], 'Deve ser igual a sua senha.').required('Confirmar senha é obrigatório.')
 });
@@ -91,6 +93,14 @@ const Register = () => {
           h={'100vh'}
           pt={'32px'}
         >
+          <FormControl isInvalid={!!errors.name}>
+            <FormLabel htmlFor='name'>Nome</FormLabel>
+            <Input
+              id='name'
+              {...register('name')}
+            />
+            <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+          </FormControl>
           <FormControl isInvalid={!!errors.email}>
             <FormLabel htmlFor='email'>Email</FormLabel>
             <Input

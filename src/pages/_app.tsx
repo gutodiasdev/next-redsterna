@@ -8,7 +8,7 @@ import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { ItinerariesProvider } from '../contexts/itinerary.context';
-import Header from '../components/Header';
+import { Header } from '../components/Header';
 import Footer from '../components/Footer';
 import { AuthProvider } from '../contexts/AuthContext';
 
@@ -50,9 +50,7 @@ export default function App ({ Component, pageProps }: AppProps<{ session: Sessi
               <ItinerariesProvider>
                 <GlobalStyle />
                 <ToastContainer />
-                <Header />
                 <Component {...pageProps} />
-                <Footer />
               </ItinerariesProvider>
             </ChakraProvider>
           </RecoilRoot>

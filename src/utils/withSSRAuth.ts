@@ -10,11 +10,12 @@ type WithSSRAuthOptions = {
 };
 
 export function withSSRAuth<P extends { [key: string]: any; }> (fn: GetServerSideProps<P>, options?: WithSSRAuthOptions) {
-  return async (ctx: GetServerSidePropsContext) => {
+  return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P> | undefined> => {
     const cookies = parseCookies(ctx);
     const token = cookies['redsterna.token'];
+    const nextauthToken = cookies['next-auth.session-token'];
 
-    if (!token) {
+    if (!token && !nextauthToken) {
       return {
         redirect: {
           destination: '/',
