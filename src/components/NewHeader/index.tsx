@@ -11,7 +11,7 @@ import { Divider } from 'semantic-ui-react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 export function NewHeader () {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
 
   return (
     <Flex maxWidth={'1100'} margin={'0 auto'} justify={'space-between'} py={'24px'}>

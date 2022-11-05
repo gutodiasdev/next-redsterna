@@ -68,11 +68,12 @@ export function AuthProvider ({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    async () => {
-      const { 'redsterna.token': token } = parseCookies();
-      const { data } = await api.get('/user/me');
-      setUser({ id: data.id });
-    };
+    api.get('/user/me').then(response => {
+      const { id } = response.data;
+      setUser({ id });
+    }).catch(() => {
+      signOut();
+    });
 
   }, []);
 
@@ -91,8 +92,7 @@ export function AuthProvider ({ children }: AuthProviderProps) {
         path: '/'
       });
 
-
-      setUser({ id: refreshToken.id });
+      setUser({ id: refreshToken.userId });
 
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 

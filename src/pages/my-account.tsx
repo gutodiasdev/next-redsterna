@@ -27,7 +27,8 @@ export default function MyAccountPage () {
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
-  console.log(user?.id);
+
+  console.log(user);
 
   const followMutation = useMutation(async () => {
     await api.post('/user/follow', {
