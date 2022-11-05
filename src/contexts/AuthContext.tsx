@@ -69,6 +69,7 @@ export function AuthProvider ({ children }: AuthProviderProps) {
 
   useEffect(() => {
     async () => {
+      const { 'redsterna.token': token } = parseCookies();
       const { data } = await api.get('/user/me');
       setUser({ id: data.id });
     };
