@@ -4,31 +4,56 @@ import {
   Button,
   Flex,
   Grid,
-  Heading,
-  useToast,
-  Skeleton
+  Heading, Skeleton, useToast
 } from '@chakra-ui/react';
+import Head from 'next/head';
 import Image from 'next/image';
+import { parseCookies } from 'nookies';
+import { useState } from 'react';
 import {
-  AiOutlineHeart,
-  AiFillHeart,
+  AiFillHeart, AiOutlineHeart
 } from 'react-icons/ai';
 import { BiPlus } from 'react-icons/bi';
-import { useContext, useState } from 'react';
-import { useMutation } from 'react-query';
-import Head from 'next/head';
-import { AuthContext } from '../contexts/AuthContext';
-import { api } from '../services/apiClient';
+import { useMutation, useQuery } from 'react-query';
+import { useRecoilState } from 'recoil';
+import { UserState } from '../atoms/User';
+import { MyDestinations } from '../components/MyDesinations';
 import { NewHeader } from '../components/NewHeader';
+import { apiUrlProvider } from '../config';
+import { api } from '../services/apiClient';
 import { withSSRAuth } from '../utils/withSSRAuth';
 
-export default function MyAccountPage () {
-  const { user } = useContext(AuthContext);
+type UserProfile = {
+  id: string,
+  email: string,
+  name: string,
+  image: string | null,
+  pictures: string | null;
+};
+
+type AccountProps = {
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+    image: string | null;
+    pictures: string | null;
+  };
+};
+
+export default function MyAccountPage ({ user }: AccountProps) {
+  const [globalUser, setGlobalUser] = useRecoilState(UserState);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
 
-  console.log(user);
+  const { data, isLoading } = useQuery(['user', user.id], async () => {
+    const { data } = await api.get<UserProfile>(`/user/profile/${user.id}`);
+
+    return data;
+  }, {
+    staleTime: 1000 * 60 * 5
+  });
 
   const followMutation = useMutation(async () => {
     await api.post('/user/follow', {
@@ -70,17 +95,24 @@ export default function MyAccountPage () {
       <Head>
         <title>Minha Conta - RedSterna</title>
       </Head>
-      <NewHeader />
+      <NewHeader name={isLoading ? '' : String(data?.name)} />
       <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'}>
             <Image src='/images/background_header.jpg' alt={'Header'} width={'1100'} height={'300'} placeholder='blur' blurDataURL='/images/background_header.jpg' />
           </Box>
         </Flex>
-        <Grid gridTemplateColumns={'auto 1fr'} px={'40px'} gap={'32px'}>
-          <Avatar size={'2xl'} mt={'-56px'} />
+        <Grid
+          gridTemplateColumns={'auto 1fr'}
+          px={'40px'}
+          pt={'16px'}
+          gap={'32px'}
+          minHeight={'160px'}
+          alignItems={'flex-start'}
+        >
+          <Avatar size={'2xl'} mt={'-72px'} name={isLoading ? '' : data?.name} />
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Heading as={'h4'}>{<Skeleton height={'32px'} />}</Heading>
+            <Heading as={'h4'}>{isLoading ? <Skeleton height={'32px'} /> : data?.name}</Heading>
             {!isFollowed && !isSameUser ? (
               <Button leftIcon={<AiOutlineHeart />} variant={'outline'} colorScheme={'red'} onClick={handleFollowUnfollow} borderRadius={'full'}>
                 Seguir
@@ -96,13 +128,29 @@ export default function MyAccountPage () {
             )}
           </Flex>
         </Grid>
+        <MyDestinations userId={String(user.id)} />
       </Grid>
     </>
   );
 }
 
 export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
+
+  const response = await fetch(apiUrlProvider('/user/me'), {
+    headers: new Headers({
+      'Authorization': `Bearer ${token}`
+    })
+  });
+
+  const user = await response.json();
+
+  console.log(user);
+
   return {
-    props: {}
+    props: {
+      user
+    },
   };
 });

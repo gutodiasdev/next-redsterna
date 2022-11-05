@@ -1,15 +1,6 @@
 import {
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  Heading,
-  Text,
-  FormErrorMessage,
-  useToast,
-  Divider
+  Box, Button, Divider, Flex,
+  FormControl, FormErrorMessage, FormLabel, Heading, Input, Text, useToast
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AxiosError } from 'axios';
@@ -54,7 +45,7 @@ const Register = () => {
         position: 'top-right'
       });
     },
-    onSuccess: () => router.push('/minha-conta')
+    onSuccess: () => router.push('/my-account')
   });
 
   const handleRegister: SubmitHandler<RegisterFormProps> = (values) => {

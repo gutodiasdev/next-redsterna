@@ -1,4 +1,4 @@
-import { Flex, HStack, Avatar, Icon } from '@chakra-ui/react';
+import { Flex, HStack, Avatar, Icon, Divider } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -7,10 +7,13 @@ import { BsSignpostSplit } from 'react-icons/bs';
 import { CiRollingSuitcase } from 'react-icons/ci';
 import { HiOutlineGlobeAmericas } from 'react-icons/hi2';
 import { VscSignIn } from 'react-icons/vsc';
-import { Divider } from 'semantic-ui-react';
 import { AuthContext } from '../../contexts/AuthContext';
 
-export function NewHeader () {
+type HeaderProps = {
+  name: string;
+};
+
+export function NewHeader ({ name }: HeaderProps) {
   const { isAuthenticated, user } = useContext(AuthContext);
 
   return (
@@ -50,7 +53,7 @@ export function NewHeader () {
             <Flex alignItems={'center'} gap={'4px'} cursor={'pointer'} border={'1px'} p={'8px'} borderRadius={'99px'} borderColor={'gray.400'}>
               <Avatar size={'sm'} />
               <span>
-                Nome de Exemplo
+                {name}
               </span>
             </Flex>
           </Flex>
