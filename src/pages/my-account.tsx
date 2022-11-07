@@ -134,7 +134,7 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
   const cookies = parseCookies(ctx);
   const token = cookies['redsterna.token'];
 
-  const response = await fetch(apiUrlProvider('/user/me'), {
+  const response = await fetch('https://redsterna.herokuapp.com/user/me', {
     headers: new Headers({
       'Authorization': `Bearer ${token}`
     })

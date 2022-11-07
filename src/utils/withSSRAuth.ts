@@ -26,8 +26,8 @@ export function withSSRAuth<P extends { [key: string]: any; }> (fn: GetServerSid
       return await fn(ctx);
     } catch (err) {
       if (err instanceof AuthTokenError) {
-        destroyCookie(ctx, 'nextauth.token');
-        destroyCookie(ctx, 'nextauth.refreshToken');
+        destroyCookie(ctx, 'redsterna.token');
+        destroyCookie(ctx, 'redsterna.refreshToken');
 
         return {
           redirect: {
