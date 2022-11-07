@@ -7,138 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ItineraryComment {
-  id      String @id @default(uuid())
-  content String
-
-  itineraryId String
-  itinarary   Itineraries @relation(fields: [itineraryId], references: [id])
-
-  author String
-  user   User   @relation(fields: [author], references: [id])
-}
-
-model ItinerariesRate {
-  id       String @id @default(uuid())
-  media    Int
-  quantity Int
-
-  itinerariesId String      @unique
-  intineraries  Itineraries @relation(fields: [itinerariesId], references: [id])
-}
-
-model ItinerariesSimple {
-  id      String                    @id @default(uuid())
-  cities  ItinerariesSimpleCities[]
-  summary String?
-
-  itinerariesId String      @unique
-  intineraries  Itineraries @relation(fields: [itinerariesId], references: [id])
-}
-
-model ItinerariesSimpleCitiesCoordinates {
-  id        String @id @default(uuid())
-  latitude  Json
-  longitude Json
-
-  itinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
-  itinerariesSimpleCitiesId String
-}
-
-model ItinerariesSimpleCitiesAccommodations {
-  id   String @id @default(uuid())
-  name String
-  rate Int
-
-  itinerariesSimpleCitiesId String
-  itinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
-}
-
-model ItinerariesSimpleCities {
-  id          String   @id @default(uuid())
-  description String
-  images      String[]
-  name        String
-  rate        Int
-
-  itinerariesSimpleId String
-  intinerariesSimple  ItinerariesSimple @relation(fields: [itinerariesSimpleId], references: [id])
-
-  accommodations ItinerariesSimpleCitiesAccommodations[]
-  coordinates    ItinerariesSimpleCitiesCoordinates[]
-}
-
-model UsersPictures {
-  id      String @id @default(uuid())
-  cover   String
-  profile String
-
-  userProfileId String @unique
-  userProfile   User   @relation(fields: [userProfileId], references: [id])
-}
-
-model UsersSocial {
-  id        String @id @default(uuid())
-  facebook  String
-  instagram String
-
-  userProfile   User   @relation(fields: [userProfileId], references: [id])
-  userProfileId String @unique
-}
-
-model Itineraries {
-  id        String              @id @default(uuid())
-  // v         Int                 @map("__v")
-  author    String
-  cover     String?
-  createdAt DateTime            @default(now())
-  days      Int
-  interests String[]
-  made      Boolean
-  rate      Int
-  simple    ItinerariesSimple[]
-  spent     String
-  title     String
-  tripDate  String
-  model     String
-
-  roadmaps ItinerariesOnRoadmaps[]
-  comments ItineraryComment[]
-
-  user User @relation(fields: [author], references: [id])
-
-  ItinerariesRate ItinerariesRate?
-}
-
-model Roadmaps {
-  id       String           @id @default(uuid())
-  comments RoadmapComment[]
-
-  itineraries ItinerariesOnRoadmaps[]
-}
-
-model ItinerariesOnRoadmaps {
-  id String @id @default(uuid())
-
-  intineraries  Itineraries @relation(fields: [itinerariesId], references: [id])
-  itinerariesId String
-  roadmaps      Roadmaps    @relation(fields: [roadmapsId], references: [id])
-  roadmapsId    String
-}
-
-model RoadmapComment {
-  id      String @id @default(uuid())
-  content String
-
-  roadmap   Roadmaps @relation(fields: [roadmapId], references: [id])
-  roadmapId String
-
-  author String
-  user   User   @relation(fields: [author], references: [id])
-}
-
 model Account {
-  id                String  @id @default(uuid())
+  id                String  @id
   userId            String
   type              String
   provider          String
@@ -150,50 +20,167 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
+model Follows {
+  id         String @id
+  followerId String
+  followeeId String
+  User       User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
+}
+
+model Itineraries {
+  id                    String                  @id
+  author                String
+  cover                 String?
+  createdAt             DateTime                @default(now())
+  days                  Int
+  interests             String[]
+  made                  Boolean
+  rate                  Int
+  spent                 String
+  title                 String
+  tripDate              String
+  model                 String
+  User                  User                    @relation(fields: [author], references: [id])
+  ItinerariesOnRoadmaps ItinerariesOnRoadmaps[]
+  ItinerariesRate       ItinerariesRate?
+  ItinerariesSimple     ItinerariesSimple?
+  ItineraryComment      ItineraryComment[]
+}
+
+model ItinerariesOnRoadmaps {
+  id            String      @id
+  itinerariesId String
+  roadmapsId    String
+  Itineraries   Itineraries @relation(fields: [itinerariesId], references: [id])
+  Roadmaps      Roadmaps    @relation(fields: [roadmapsId], references: [id])
+}
+
+model ItinerariesRate {
+  id            String      @id
+  media         Int
+  quantity      Int
+  itinerariesId String      @unique
+  Itineraries   Itineraries @relation(fields: [itinerariesId], references: [id])
+}
+
+model ItinerariesSimple {
+  id                      String                    @id
+  summary                 String?
+  itinerariesId           String                    @unique
+  Itineraries             Itineraries               @relation(fields: [itinerariesId], references: [id])
+  ItinerariesSimpleCities ItinerariesSimpleCities[]
+}
+
+model ItinerariesSimpleCities {
+  id                                    String                                  @id
+  description                           String
+  images                                String[]
+  name                                  String
+  rate                                  Int
+  itinerariesSimpleId                   String
+  ItinerariesSimple                     ItinerariesSimple                       @relation(fields: [itinerariesSimpleId], references: [id])
+  ItinerariesSimpleCitiesAccommodations ItinerariesSimpleCitiesAccommodations[]
+  ItinerariesSimpleCitiesCoordinates    ItinerariesSimpleCitiesCoordinates[]
+}
+
+model ItinerariesSimpleCitiesAccommodations {
+  id                        String                  @id
+  name                      String
+  rate                      Int
+  itinerariesSimpleCitiesId String
+  ItinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
+}
+
+model ItinerariesSimpleCitiesCoordinates {
+  id                        String                  @id
+  latitude                  Json
+  longitude                 Json
+  itinerariesSimpleCitiesId String
+  ItinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
+}
+
+model ItineraryComment {
+  id          String      @id
+  content     String
+  itineraryId String
+  author      String
+  User        User        @relation(fields: [author], references: [id])
+  Itineraries Itineraries @relation(fields: [itineraryId], references: [id])
+}
+
+model RoadmapComment {
+  id        String   @id
+  content   String
+  roadmapId String
+  author    String
+  User      User     @relation(fields: [author], references: [id])
+  Roadmaps  Roadmaps @relation(fields: [roadmapId], references: [id])
+}
+
+model Roadmaps {
+  id                    String                  @id
+  ItinerariesOnRoadmaps ItinerariesOnRoadmaps[]
+  RoadmapComment        RoadmapComment[]
+}
+
 model Session {
-  id           String   @id @default(uuid())
+  id           String   @id
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id                  String             @id @default(uuid())
-  name                String?
-  email               String?            @unique
-  emailVerified       DateTime?
-  image               String?
-  firstname           String?
-  lastname            String?
-  gender              String?
-  pictures            UsersPictures?
-  social              UsersSocial?
-  about               String?
-  birthdate           String?
-  confirmPolicy       Boolean            @default(false)
-  country             String?
-  ranking             String?
-  follows             Follows[]
-  interests           String[]
-  itineraries         Itineraries[]
-  username            String?            @unique
-  roadmapsComments    RoadmapComment[]
-  itinerariesComments ItineraryComment[]
-  password            String?
-  favorites           Json?
-  refreshToken        RefreshToken?
+  id               String             @id
+  name             String?
+  email            String?            @unique
+  emailVerified    DateTime?
+  image            String?
+  firstname        String?
+  lastname         String?
+  gender           String?
+  about            String?
+  birthdate        String?
+  confirmPolicy    Boolean            @default(false)
+  country          String?
+  ranking          String?
+  interests        String[]
+  username         String?            @unique
+  password         String?
+  favorites        Json?
+  role             ROLE               @default(user)
+  Account          Account[]
+  Follows          Follows[]
+  Itineraries      Itineraries[]
+  ItineraryComment ItineraryComment[]
+  RoadmapComment   RoadmapComment[]
+  Session          Session[]
+  UsersPictures    UsersPictures?
+  UsersSocial      UsersSocial?
+  city_card        city_card[]
+  refresh_token    refresh_token?
+}
 
-  accounts Account[]
-  sessions Session[]
+model UsersPictures {
+  id            String @id
+  cover         String
+  profile       String
+  userProfileId String @unique
+  User          User   @relation(fields: [userProfileId], references: [id])
+}
 
-  role ROLE @default(user)
+model UsersSocial {
+  id            String @id
+  facebook      String
+  instagram     String
+  userProfileId String @unique
+  User          User   @relation(fields: [userProfileId], references: [id])
 }
 
 model VerificationToken {
@@ -204,21 +191,28 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model RefreshToken {
-  id        String @id @default(uuid())
-  expiresIn Int
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String @unique
-
-  @@map("refresh_token")
+model affiliate_script {
+  id           String    @id
+  script       String
+  city_card_id String
+  city_card    city_card @relation(fields: [city_card_id], references: [id])
 }
 
-model Follows {
-  id         String @id @default(uuid())
-  followerId String
-  followeeId String
+model city_card {
+  id               String             @id
+  image            String
+  name             String
+  description      String
+  author           String
+  User             User               @relation(fields: [author], references: [id])
+  affiliate_script affiliate_script[]
+}
 
-  follower User @relation(fields: [followerId], references: [id], onDelete: Cascade)
+model refresh_token {
+  id        String @id
+  expiresIn Int
+  userId    String @unique
+  User      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum ROLE {

@@ -1,16 +1,14 @@
-import type { AppProps } from 'next/app';
-import { SessionProvider } from "next-auth/react";
-import { Session } from "next-auth";
 import { ChakraProvider } from '@chakra-ui/react';
-import { ToastContainer } from "react-toastify";
-import { createGlobalStyle } from "styled-components";
-import { RecoilRoot } from 'recoil';
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ToastContainer } from "react-toastify";
+import { RecoilRoot } from 'recoil';
+import { createGlobalStyle } from "styled-components";
 
-import { ItinerariesProvider } from '../contexts/itinerary.context';
-import { Header } from '../components/Header';
-import Footer from '../components/Footer';
 import { AuthProvider } from '../contexts/AuthContext';
+import { ItinerariesProvider } from '../contexts/itinerary.context';
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -38,7 +36,7 @@ a {
   }
 }`;
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export default function App ({ Component, pageProps }: AppProps<{ session: Session; }>) {
   return (

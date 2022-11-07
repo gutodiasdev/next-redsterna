@@ -56,6 +56,8 @@ export default function DashboardCities () {
     const response = await api.get('/city/all');
 
     return response.data;
+  }, {
+    staleTime: 1000 * 60 * 5
   });
 
   return (

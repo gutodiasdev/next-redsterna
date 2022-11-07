@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { useMutation } from 'react-query';
 import * as yup from 'yup';
+import { queryClient } from '../../pages/_app';
 import { api } from '../../services/apiClient';
 
 type FormProps = {
@@ -43,6 +44,7 @@ export function CreateCityForm ({ userId }: CreateCityFormProps) {
         duration: 1000,
         onCloseComplete () {
           router.push('/dashboard/cities');
+          queryClient.invalidateQueries(['allCities', userId]);
         }
       });
     },
