@@ -6,7 +6,7 @@ import { Draggable, Map } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
 import { useQuery } from 'react-query';
 import { useItineraries } from '../../contexts/itinerary.context';
-import { api } from '../../services/api';
+import { api } from '../../services/apiClient';
 // import { useItineraries } from "../../contexts/itinerary.context";
 
 import * as C from "./styles";

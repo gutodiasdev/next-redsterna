@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import { Formik, Field, FieldArray } from "formik";
 
-import { api } from "../../services/api";
+import { api } from "../../services/apiClient";
 
 import CityForm from "../../components/cities";
 

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import StarRating from "../../components/starRating";
-import { api } from '../../services/api';
+import { api } from '../../services/apiClient';
 
 import {
   Container,

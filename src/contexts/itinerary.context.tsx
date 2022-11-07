@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
-import { api } from "../services/api";
+import { api } from "../services/apiClient";
 
 interface ItinerariesContextData {
   uploadFile (file: any): Promise<string>;
