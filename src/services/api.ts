@@ -19,7 +19,7 @@ export function setupAPIClient (ctx = undefined) {
     });
   } else {
     api = axios.create({
-      baseURL: "https://next-redsterna.vercel.app/api",
+      baseURL: "https://redsterna.herokuapp.com/",
       headers: {
         Authorization: `Bearer ${cookies['redsterna.token']}`
       }
