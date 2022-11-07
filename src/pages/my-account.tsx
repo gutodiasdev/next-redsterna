@@ -4,7 +4,8 @@ import {
   Button,
   Flex,
   Grid,
-  Heading, Skeleton, useToast
+  Heading, Skeleton,
+  useToast
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -13,10 +14,8 @@ import { useState } from 'react';
 import {
   AiFillHeart, AiOutlineHeart
 } from 'react-icons/ai';
-import { BiPlus } from 'react-icons/bi';
 import { useMutation, useQuery } from 'react-query';
-import { useRecoilState } from 'recoil';
-import { UserState } from '../atoms/User';
+import { MyAccountCreateMenu } from '../components/MyAccountCreateMenu';
 import { MyDestinations } from '../components/MyDesinations';
 import { NewHeader } from '../components/NewHeader';
 import { apiUrlProvider } from '../config';
@@ -42,7 +41,6 @@ type AccountProps = {
 };
 
 export default function MyAccountPage ({ user }: AccountProps) {
-  const [globalUser, setGlobalUser] = useRecoilState(UserState);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
@@ -122,9 +120,7 @@ export default function MyAccountPage ({ user }: AccountProps) {
                 Seguindo
               </Button>
             ) : (
-              <Button leftIcon={<BiPlus />} colorScheme={'red'} borderRadius={'full'}>
-                Criar
-              </Button>
+              <MyAccountCreateMenu />
             )}
           </Flex>
         </Grid>
@@ -145,8 +141,6 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
   });
 
   const user = await response.json();
-
-  console.log(user);
 
   return {
     props: {

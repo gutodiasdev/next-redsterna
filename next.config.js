@@ -4,6 +4,9 @@ const nextConfig = {
   swcMinify: true,
   compiler: {
     styledComponents: true,
+  },
+  images: {
+    domains: ['redsterna.s3.us-east-1.amazonaws.com']
   }
 };
 

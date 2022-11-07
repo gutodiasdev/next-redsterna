@@ -1,8 +1,7 @@
+import { signOut as nextSignOut } from 'next-auth/react';
 import Router from 'next/router';
 import { destroyCookie, parseCookies, setCookie } from 'nookies';
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { signOut as nextSignOut } from 'next-auth/react';
-import decode from 'jwt-decode';
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 import { api } from "../services/apiClient";
 

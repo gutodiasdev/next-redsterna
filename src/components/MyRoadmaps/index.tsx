@@ -10,11 +10,11 @@ import { useQuery } from 'react-query';
 
 import { api } from '../../services/apiClient';
 
-type MyDestinationsProps = {
+type MyRoadmapsProps = {
   userId: string;
 };
 
-export function MyDestinations ({ userId }: MyDestinationsProps) {
+export function MyRoadmaps ({ userId }: MyRoadmapsProps) {
 
   const { data, isLoading, error } = useQuery(['myDestinations'], async () => {
     const { data } = await api.get(`/itineraries/user/${userId}`);
@@ -45,9 +45,9 @@ export function MyDestinations ({ userId }: MyDestinationsProps) {
             py={'40px'}
           >
             <Icon as={RiEmotionSadLine} size={'2rem'} />
-            <Text>Você ainda não tem destinos</Text>
+            <Text>Você ainda não tem roteiros</Text>
             <Button variant={'outline'} colorScheme={'red'}>
-              Adicionar novo destino
+              Criar novo roteiro
             </Button>
           </Flex>
         ) : error ? (
