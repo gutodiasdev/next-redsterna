@@ -8,6 +8,8 @@ import {
   Grid,
   Icon,
   Input,
+  Skeleton,
+  Spinner,
   Textarea,
   useToast
 } from '@chakra-ui/react';
@@ -120,9 +122,15 @@ export default function SingleCity () {
               Voltar
             </Button>
           </Link>
-          <Box my={'32px'}>
-            <Image src={data.image} alt={data.description} width={200} height={200} />
-          </Box>
+          {isLoading ? (
+            <Box my={'32px'}>
+              <Skeleton width={'200px'} height={'100px'} />
+            </Box>
+          ) : (
+            <Box my={'32px'}>
+              <Image src={data.image} alt={data.description} width={200} height={100} />
+            </Box>
+          )}
           <Box as='form' onSubmit={handleSubmit(handleCreateCity)}>
             <Flex flexDirection={'column'} gap={'16px'}>
               {uploadedImage !== '' ? (
