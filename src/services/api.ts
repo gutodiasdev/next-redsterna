@@ -10,21 +10,21 @@ export function setupAPIClient (ctx = undefined) {
   let cookies = parseCookies();
   let api: AxiosInstance;
 
-  if (process.env.NODE_ENV !== 'production') {
-    api = axios.create({
-      baseURL: "http://localhost:3001",
-      headers: {
-        Authorization: `Bearer ${cookies['redsterna.token']}`
-      }
-    });
-  } else {
-    api = axios.create({
-      baseURL: "https://redsterna.herokuapp.com/",
-      headers: {
-        Authorization: `Bearer ${cookies['redsterna.token']}`
-      }
-    });
-  }
+  // if (process.env.NODE_ENV !== 'production') {
+  //   api = axios.create({
+  //     baseURL: "http://localhost:3001",
+  //     headers: {
+  //       Authorization: `Bearer ${cookies['redsterna.token']}`
+  //     }
+  //   });
+  // } else {
+  api = axios.create({
+    baseURL: "https://redsterna.herokuapp.com/",
+    headers: {
+      Authorization: `Bearer ${cookies['redsterna.token']}`
+    }
+  });
+  // }
 
   api.interceptors.response.use(response => {
     return response;
