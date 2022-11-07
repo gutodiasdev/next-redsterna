@@ -128,7 +128,7 @@ export default function SingleCity () {
               {uploadedImage !== '' ? (
                 <Box overflow={'hidden'} position={'relative'}>
                   <Icon as={AiFillCloseCircle} onClick={() => setUploadedImage('')} position={'absolute'} right={'8px'} top={'8px'} color={'red'} cursor={'pointer'} backgroundColor={'white'} rounded={'full'} />
-                  <Image src={uploadedImage} alt={'Imagem adicionata'} width={'auto'} height={'auto'} />
+                  <Image src={uploadedImage} alt={'Imagem adicionata'} fill />
                   <FormErrorMessage>{errors.image && errors.image.message}</FormErrorMessage>
                 </Box>
               ) : (
