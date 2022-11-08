@@ -12,11 +12,12 @@ import {
 import { withSSRGuest } from '../utils/withSSRGuest';
 import { Header } from '../components/Header';
 import Footer from '../components/Footer';
+import { NewHeader } from '../components/NewHeader';
 
 export default function Home () {
   return (
     <>
-      <Header />
+      <NewHeader />
       <Container>
         <MapPage height={300} />
         <Box>
