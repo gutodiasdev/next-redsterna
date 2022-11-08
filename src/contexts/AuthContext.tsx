@@ -54,7 +54,7 @@ type AuthProviderProps = {
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 
-function signOut () {
+export function signOut () {
   const { 'redsterna.token': token, 'next-auth.session-token': nextauthtoken } = parseCookies();
 
   if (token) destroyCookie(undefined, 'redsterna.token');
