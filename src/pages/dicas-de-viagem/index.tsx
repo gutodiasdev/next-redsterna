@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NewHeader } from '../../components/NewHeader';
 import * as C from "../../styles/suggestions";
 
 const Suggestions = () => {
@@ -69,16 +70,19 @@ const Suggestions = () => {
   );
 
   return (
-    <C.Container>
-      <C.ImageContainer>
-        <h2>DICAS DE VIAGEM</h2>
-      </C.ImageContainer>
-      <C.Section>
-        {cardprops.map((props, index) => (
-          <Card {...props} key={index} />
-        ))}
-      </C.Section>
-    </C.Container>
+    <>
+      <NewHeader />
+      <C.Container>
+        <C.ImageContainer>
+          <h2>DICAS DE VIAGEM</h2>
+        </C.ImageContainer>
+        <C.Section>
+          {cardprops.map((props, index) => (
+            <Card {...props} key={index} />
+          ))}
+        </C.Section>
+      </C.Container>
+    </>
   );
 };
 

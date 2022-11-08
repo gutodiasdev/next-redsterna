@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { parseCookies } from 'nookies';
 import { useEffect, useState } from "react";
+import { NewHeader } from '../../components/NewHeader';
 import StarRating from "../../components/starRating";
 import { api } from '../../services/apiClient';
 
@@ -17,6 +19,7 @@ import {
   CheckboxContainer,
   CheckboxLabel,
 } from "../../styles/list-itineraries";
+import { withSSRAuth } from '../../utils/withSSRAuth';
 
 export default function ListItinerary () {
   const [itineraries, setItineraries] = useState<any>([]);
@@ -70,151 +73,153 @@ export default function ListItinerary () {
       : filteredByCategorytineraries;
 
   return (
-    <Container>
-      <Header>DESTINOS</Header>
-      <Line fullWidth>
-        <Title>Navegue pelos roteiros publicados</Title>
-      </Line>
-      <Line fullWidth style={{ justifyContent: "space-between" }}>
-        <Input
-          type="text"
-          placeholder="Procurar por cidade..."
-          onChange={(e) => setCity(e.target.value)}
-          value={city}
-        />
-        <div>
+    <>
+      <NewHeader />
+      <Container>
+        <Header>DESTINOS</Header>
+        <Line fullWidth>
+          <Title>Navegue pelos roteiros publicados</Title>
+        </Line>
+        <Line fullWidth style={{ justifyContent: "space-between" }}>
           <Input
-            type="number"
-            placeholder="Valor Minimo"
-            onChange={(e) => setMinPrice(Number(e.target.value))}
-            step="0.01"
-            min="0"
-            value={minPrice}
+            type="text"
+            placeholder="Procurar por cidade..."
+            onChange={(e) => setCity(e.target.value)}
+            value={city}
           />
-          <Input
-            type="number"
-            placeholder="Valor Maximo"
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            step="0.01"
-            min="0"
-            value={maxPrice}
-          />
-        </div>
-      </Line>
-      <Line fullWidth>
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="cidade histórica"
-            checked={!!(interest === "cidade histórica")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Cidade Histórica</CheckboxLabel>
-        </CheckboxContainer>
+          <div>
+            <Input
+              type="number"
+              placeholder="Valor Minimo"
+              onChange={(e) => setMinPrice(Number(e.target.value))}
+              step="0.01"
+              min="0"
+              value={minPrice}
+            />
+            <Input
+              type="number"
+              placeholder="Valor Maximo"
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              step="0.01"
+              min="0"
+              value={maxPrice}
+            />
+          </div>
+        </Line>
+        <Line fullWidth>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="cidade histórica"
+              checked={!!(interest === "cidade histórica")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Cidade Histórica</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="praia"
-            checked={!!(interest === "praia")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Praia</CheckboxLabel>
-        </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="praia"
+              checked={!!(interest === "praia")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Praia</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="montanha"
-            checked={!!(interest === "montanha")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Montanha</CheckboxLabel>
-        </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="montanha"
+              checked={!!(interest === "montanha")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Montanha</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="camping"
-            checked={!!(interest === "camping")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Camping</CheckboxLabel>
-        </CheckboxContainer>
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="cidade moderna"
-            checked={!!(interest === "cidade moderna")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Cidade Moderna</CheckboxLabel>
-        </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="camping"
+              checked={!!(interest === "camping")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Camping</CheckboxLabel>
+          </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="cidade moderna"
+              checked={!!(interest === "cidade moderna")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Cidade Moderna</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="campo"
-            checked={!!(interest === "campo")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Campo</CheckboxLabel>
-        </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="campo"
+              checked={!!(interest === "campo")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Campo</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="cachoeira"
-            checked={!!(interest === "cachoeira")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Cachoeira</CheckboxLabel>
-        </CheckboxContainer>
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="cachoeira"
+              checked={!!(interest === "cachoeira")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Cachoeira</CheckboxLabel>
+          </CheckboxContainer>
 
-        <CheckboxContainer>
-          <Checkbox
-            onChange={(e: any) =>
-              interest === e.target.value
-                ? setInterest("")
-                : setInterest(e.target.value)
-            }
-            value="trekking"
-            checked={!!(interest === "trekking")}
-            type="checkbox"
-          />
-          <CheckboxLabel>Trekking</CheckboxLabel>
-        </CheckboxContainer>
-      </Line>
-      <List>
-        {/* {filteredtineraries.length > 0 ? (
+          <CheckboxContainer>
+            <Checkbox
+              onChange={(e: any) =>
+                interest === e.target.value
+                  ? setInterest("")
+                  : setInterest(e.target.value)
+              }
+              value="trekking"
+              checked={!!(interest === "trekking")}
+              type="checkbox"
+            />
+            <CheckboxLabel>Trekking</CheckboxLabel>
+          </CheckboxContainer>
+        </Line>
+        <List>
+          {/* {filteredtineraries.length > 0 ? (
           filteredtineraries.map((itinerary: any, index: any) => (
             <Card
               key={itinerary._id}
@@ -256,7 +261,27 @@ export default function ListItinerary () {
         ) : (
           <Title>Não há roteiros para serem listados</Title>
         )} */}
-      </List>
-    </Container>
+        </List>
+      </Container>
+    </>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
+
+  const response = await fetch('https://redsterna.herokuapp.com/user/me', {
+    headers: new Headers({
+      'Authorization': `Bearer ${token}`
+    })
+  });
+
+  const user = await response.json();
+
+  return {
+    props: {
+      user
+    },
+  };
+});
