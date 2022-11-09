@@ -5,11 +5,11 @@ import { withSSRAuth } from '../utils/withSSRAuth';
 import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
-import { Box, Button, Checkbox, Divider, Flex, FormControl, FormLabel, Grid, GridItem, Heading, HStack, Input, Radio, RadioGroup, Select, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, Divider, filter, Flex, FormControl, FormLabel, Grid, Heading, HStack, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsUpload } from 'react-icons/bs';
 import { City } from 'country-state-city';
-import debounce from 'debounce';
+import { useQuery } from 'react-query';
 
 type FormProps = {
   roadmap_type: string;
@@ -33,13 +33,14 @@ type CityProps = {
 export default function Itinerary () {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
-  const [isSearchingCity, setIsSearchingCity] = useState(false);
-  const [cityNameToSearch, setCityNameToSearch] = useState('');
-  const [chosenCity, setChosenCity] = useState();
+  const [isFilteringCity, setIsFilteringCity] = useState(false);
+  const [filteredCities, setFilteredCities] = useState<Array<CityProps>>([]);
 
   const { uploadFile } = useItineraries();
   const { user } = useContext(AuthContext);
   const { register, formState: { isSubmitting } } = useForm<FormProps>();
+
+  const { data: allCities } = useQuery(['allCities'], City.getAllCities, { staleTime: 1000 * 60 * 60 * 24 });
 
   const addItinerary = () => {
     setIndexes(prevIndexes => [...prevIndexes, counter]);
@@ -61,16 +62,16 @@ export default function Itinerary () {
     console.log(values);
   };
 
-  const getCitiesByName = (): Array<CityProps> => {
-    const cities = City.getAllCities().filter(city => city.name.includes(cityNameToSearch));
-    return cities;
-  };
-
-  const handleCitySelect = (values: any): void => {
-    setIsSearchingCity(true);
-    setCityNameToSearch(values);
-    debounce(getCitiesByName, 500);
-  };
+  function handleFilterCities (value: string) {
+    if (value.length > 2) {
+      setIsFilteringCity(true);
+      setTimeout(() => {
+        setFilteredCities(allCities?.filter(city => city.name.includes(value))!);
+      }, 500);
+    } else {
+      setIsFilteringCity(false);
+    }
+  }
 
   return (
     <>
@@ -168,21 +169,28 @@ export default function Itinerary () {
                 <Grid gridTemplateColumns={'1fr auto'} gap={'24px'}>
                   <FormControl>
                     <FormLabel>Cidade</FormLabel>
-                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} onChange={(e) => handleCitySelect(e.target.value)} />
-                    <Box zIndex={'99'} marginTop={'-4px'} position={'absolute'} backgroundColor={'white'} borderLeft={'1px'} borderRight={'1px'} borderBottom={'1px'} height={'200px'} overflowY={'auto'} width={'100%'}>
-                      {isSearchingCity ? (
-                        getCitiesByName().map((city: CityProps, index) => {
-                          return (
-                            <Flex key={index} p={'8px 16px'} cursor={'pointer'} _hover={{ backgroundColor: 'gray.200' }} justifyContent={'space-between'} width={'100%'}>
-                              {city.name}
-                              <Flex>
-                                {city.stateCode}, {city.countryCode}
-                              </Flex>
-                            </Flex>
-                          );
-                        })
-                      ) : null}
-                    </Box>
+                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} onChange={(e) => handleFilterCities(e.target.value)} />
+                    {
+                      isFilteringCity ? (
+                        <Box position={'absolute'} backgroundColor={'white'} zIndex={'99'} width={'100%'} p={'4px 16px'} borderColor={'gray.600'} borderLeft={'1px'} borderRight={'1px'} borderBottom={'1px'} boxShadow={'lg'} borderRadius={'0 0 8px 8px'} maxHeight={'200px'} overflowY={'auto'} mt={'-4px'}>
+                          <Divider orientation='horizontal' position={'fixed'} top={'0'} />
+
+                          {
+                            filteredCities.map((city: CityProps, index) => {
+                              return (
+                                <Flex key={index} width={'100%'} justifyContent={'space-between'} _hover={{ backgroundColor: 'gray.200' }} cursor={'pointer'} my={'8px'}>
+                                  <Text>{city.name}</Text>
+                                  <Flex gap={'16px'}>
+                                    <Text>{city.stateCode}, </Text>
+                                    <Text>{city.countryCode}</Text>
+                                  </Flex>
+                                </Flex>
+                              );
+                            })
+                          }
+                        </Box>
+                      ) : null
+                    }
                   </FormControl>
                   <FormControl>
                     <FormLabel>Avaliação</FormLabel>
