@@ -73,6 +73,8 @@ export default function Itinerary () {
     }
   }
 
+  console.log(filteredCities);
+
   return (
     <>
       <Head>
@@ -84,6 +86,27 @@ export default function Itinerary () {
           Criar Roteiro
         </Heading>
         <VStack as='form' spacing={'24px'}>
+          <FormControl>
+            <Text mb={'8px'}>Foto de capa</Text>
+            <FormLabel
+              display={'flex'}
+              cursor={'pointer'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              border={'1px'}
+              borderColor={'gray.400'}
+              borderStyle={'dashed'}
+              borderRadius={'lg'}
+              height={'200px'}
+              width={'100%'}
+            >
+              <VStack textAlign={'center'}>
+                <BsUpload />
+                <Text>Faça o upload da imagem de capa</Text>
+              </VStack>
+              <Input type='file' display={'none'} />
+            </FormLabel>
+          </FormControl>
           <FormControl>
             <FormLabel>Tipo de roteiro</FormLabel>
             <RadioGroup defaultValue={'done'}>
@@ -117,27 +140,6 @@ export default function Itinerary () {
               <Checkbox colorScheme={'red'} value='camping'>Camping</Checkbox>
               <Checkbox colorScheme={'red'} value='trekking'>Trekking</Checkbox>
             </Grid>
-          </FormControl>
-          <FormControl>
-            <Text mb={'8px'}>Foto de capa</Text>
-            <FormLabel
-              display={'flex'}
-              cursor={'pointer'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              border={'1px'}
-              borderColor={'gray.400'}
-              borderStyle={'dashed'}
-              borderRadius={'lg'}
-              height={'200px'}
-              width={'100%'}
-            >
-              <VStack textAlign={'center'}>
-                <BsUpload />
-                <Text>Faça o upload da imagem de capa</Text>
-              </VStack>
-              <Input type='file' display={'none'} />
-            </FormLabel>
           </FormControl>
           <Grid gridTemplateColumns={'1fr 1fr'} w={'100%'} gap={'24px'}>
             <FormControl>
