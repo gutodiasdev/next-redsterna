@@ -5,9 +5,11 @@ import { withSSRAuth } from '../utils/withSSRAuth';
 import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
-import { Box, Button, Checkbox, Divider, FormControl, FormLabel, Grid, GridItem, Heading, HStack, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, Divider, Flex, FormControl, FormLabel, Grid, GridItem, Heading, HStack, Input, Radio, RadioGroup, Select, Text, Textarea, VStack } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsUpload } from 'react-icons/bs';
+import { City } from 'country-state-city';
+import debounce from 'debounce';
 
 type FormProps = {
   roadmap_type: string;
@@ -20,9 +22,20 @@ type FormProps = {
   trip_review: string;
 };
 
+type CityProps = {
+  countryCode: string;
+  latitude: string;
+  longitude: string;
+  name: string;
+  stateCode: string;
+};
+
 export default function Itinerary () {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
+  const [isSearchingCity, setIsSearchingCity] = useState(false);
+  const [cityNameToSearch, setCityNameToSearch] = useState('');
+  const [chosenCity, setChosenCity] = useState();
 
   const { uploadFile } = useItineraries();
   const { user } = useContext(AuthContext);
@@ -46,6 +59,17 @@ export default function Itinerary () {
 
   const handleCreateRoadMap: SubmitHandler<FormProps> = (values) => {
     console.log(values);
+  };
+
+  const getCitiesByName = (): Array<CityProps> => {
+    const cities = City.getAllCities().filter(city => city.name.includes(cityNameToSearch));
+    return cities;
+  };
+
+  const handleCitySelect = (values: any): void => {
+    setIsSearchingCity(true);
+    setCityNameToSearch(values);
+    debounce(getCitiesByName, 500);
   };
 
   return (
@@ -144,7 +168,21 @@ export default function Itinerary () {
                 <Grid gridTemplateColumns={'1fr auto'} gap={'24px'}>
                   <FormControl>
                     <FormLabel>Cidade</FormLabel>
-                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} />
+                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} onChange={(e) => handleCitySelect(e.target.value)} />
+                    <Box zIndex={'99'} marginTop={'-4px'} position={'absolute'} backgroundColor={'white'} borderLeft={'1px'} borderRight={'1px'} borderBottom={'1px'} height={'200px'} overflowY={'auto'} width={'100%'}>
+                      {isSearchingCity ? (
+                        getCitiesByName().map((city: CityProps, index) => {
+                          return (
+                            <Flex key={index} p={'8px 16px'} cursor={'pointer'} _hover={{ backgroundColor: 'gray.200' }} justifyContent={'space-between'} width={'100%'}>
+                              {city.name}
+                              <Flex>
+                                {city.stateCode}, {city.countryCode}
+                              </Flex>
+                            </Flex>
+                          );
+                        })
+                      ) : null}
+                    </Box>
                   </FormControl>
                   <FormControl>
                     <FormLabel>Avaliação</FormLabel>

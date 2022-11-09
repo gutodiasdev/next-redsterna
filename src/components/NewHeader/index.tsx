@@ -36,8 +36,6 @@ export function NewHeader ({ name }: HeaderProps) {
     staleTime: 1000 * 60 * 5
   });
 
-  console.log(isAuthenticated, user);
-
   return (
     <>
       <Flex maxWidth={'1100'} margin={'0 auto'} justify={'space-between'} py={'24px'}>
