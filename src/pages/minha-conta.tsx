@@ -77,8 +77,6 @@ export default function Profile () {
     staleTime: 1000 * 10
   });
 
-  console.log(data);
-
   return (
     <>
       <Flex

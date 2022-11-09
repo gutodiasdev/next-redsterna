@@ -12,6 +12,10 @@ export interface SignInRequest {
 
 type User = {
   id: string;
+  email?: string,
+  name?: string;
+  image?: string;
+  pictures?: string;
 };
 
 type RegisterProps = {
@@ -53,6 +57,7 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
+let authChannel: BroadcastChannel;
 
 export function signOut () {
   const { 'redsterna.token': token, 'next-auth.session-token': nextauthtoken } = parseCookies();
@@ -68,12 +73,30 @@ export function AuthProvider ({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    api.get('/user/me').then(response => {
-      const { id } = response.data;
-      setUser({ id });
-    }).catch(() => {
-      signOut();
-    });
+    authChannel = new BroadcastChannel('auth');
+
+    authChannel.onmessage = (message) => {
+      switch (message.data) {
+        case 'signOut':
+          signOut();
+          break;
+        default:
+          break;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const { 'redsterna.token': token } = parseCookies();
+
+    if (token) {
+      api.get('/user/me').then(response => {
+        const { id, email, name, image, pictures } = response.data;
+        setUser({ id, email, name, image, pictures });
+      }).catch(() => {
+        signOut();
+      });
+    }
 
   }, []);
 

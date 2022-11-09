@@ -1,4 +1,5 @@
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import Link from 'next/link';
 import { BiPlus } from 'react-icons/bi';
 
 export function MyAccountCreateMenu () {
@@ -9,7 +10,9 @@ export function MyAccountCreateMenu () {
       </MenuButton>
       <MenuList>
         <MenuItem>Criar Destino</MenuItem>
-        <MenuItem>Criar Roteiro</MenuItem>
+        <Link href={'/criar-roteiro'}>
+          <MenuItem>Criar Roteiro</MenuItem>
+        </Link>
       </MenuList>
     </Menu>
   );

@@ -1,4 +1,4 @@
-import { Flex, HStack, Avatar, Icon, Divider, Menu, MenuList, MenuGroup, MenuItem, MenuButton, MenuDivider, useDisclosure } from '@chakra-ui/react';
+import { Flex, HStack, Avatar, Icon, Divider, Menu, MenuList, MenuGroup, MenuItem, MenuButton, MenuDivider, useDisclosure, Skeleton } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -35,6 +35,8 @@ export function NewHeader ({ name }: HeaderProps) {
   }, {
     staleTime: 1000 * 60 * 5
   });
+
+  console.log(isAuthenticated, user);
 
   return (
     <>
@@ -77,9 +79,11 @@ export function NewHeader ({ name }: HeaderProps) {
                   <Divider orientation='vertical' />
                   <Flex alignItems={'center'} gap={'4px'} cursor={'pointer'} border={'1px'} p={'8px'} borderRadius={'99px'} borderColor={'gray.400'}>
                     <Avatar size={'sm'} />
-                    <span>
-                      {data?.name}
-                    </span>
+                    <Skeleton isLoaded={!isLoading}>
+                      <span>
+                        {data?.name}
+                      </span>
+                    </Skeleton>
                   </Flex>
                 </MenuButton>
                 <MenuList>

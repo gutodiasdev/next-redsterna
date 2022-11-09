@@ -12,6 +12,8 @@ import { useItineraries } from '../contexts/itinerary.context';
 import { withSSRAuth } from '../utils/withSSRAuth';
 import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
+import { NewHeader } from '../components/NewHeader';
+import { Box, Heading } from '@chakra-ui/react';
 
 const FormikObserver = () => {
   const { values } = useFormikContext();
@@ -23,9 +25,7 @@ const FormikObserver = () => {
 const Itinerary = () => {
   const { uploadFile } = useItineraries();
   const { user } = useContext(AuthContext);
-  console.log(user);
 
-  //temporary
 
   const formEmptyValues = {
     author: user?.id,
@@ -73,11 +73,14 @@ const Itinerary = () => {
       <Head>
         <title>Crie um roteiro - RedSterna</title>
       </Head>
+      <NewHeader />
+      <Box w={'1100px'} margin={'0 auto'} my={'32px'}>
+        <Heading>
+          Criar Roteiro
+        </Heading>
+      </Box>
       <S.Container>
         <S.FormikContainer>
-          <S.Cover>
-            <S.CoverIcon src="/images/desktop/create_itinerary.png" />
-          </S.Cover>
           <Formik
             initialValues={initialValues}
             onSubmit={async (values) => {
