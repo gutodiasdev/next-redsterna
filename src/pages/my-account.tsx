@@ -10,7 +10,7 @@ import {
 import Head from 'next/head';
 import Image from 'next/image';
 import { parseCookies } from 'nookies';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   AiFillHeart, AiOutlineHeart
 } from 'react-icons/ai';
@@ -19,6 +19,7 @@ import { MyAccountCreateMenu } from '../components/MyAccountCreateMenu';
 import { MyDestinations } from '../components/MyDesinations';
 import { NewHeader } from '../components/NewHeader';
 import { apiUrlProvider } from '../config';
+import { AuthContext } from '../contexts/AuthContext';
 import { api } from '../services/apiClient';
 import { withSSRAuth } from '../utils/withSSRAuth';
 
@@ -40,18 +41,13 @@ type AccountProps = {
   };
 };
 
-export default function MyAccountPage ({ user }: AccountProps) {
+export default function MyAccountPage () {
+  const { user } = useContext(AuthContext);
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
 
-  const { data, isLoading } = useQuery(['user', user.id], async () => {
-    const { data } = await api.get<UserProfile>(`/user/profile/${user.id}`);
-
-    return data;
-  }, {
-    staleTime: 1000 * 60 * 5
-  });
+  console.log(user);
 
   const followMutation = useMutation(async () => {
     await api.post('/user/follow', {
@@ -93,7 +89,7 @@ export default function MyAccountPage ({ user }: AccountProps) {
       <Head>
         <title>Minha Conta - RedSterna</title>
       </Head>
-      <NewHeader name={isLoading ? '' : String(data?.name)} />
+      <NewHeader name={user?.name || 'Bem vindo'} />
       <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'}>
@@ -108,9 +104,9 @@ export default function MyAccountPage ({ user }: AccountProps) {
           minHeight={'160px'}
           alignItems={'flex-start'}
         >
-          <Avatar size={'2xl'} mt={'-72px'} name={isLoading ? '' : data?.name} />
+          <Avatar size={'2xl'} mt={'-72px'} name={user?.name || 'Bem vindo'} />
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Heading as={'h4'}>{isLoading ? <Skeleton height={'32px'} /> : data?.name}</Heading>
+            <Heading as={'h4'}>{user?.name || 'Bem vindo'} </Heading>
             {!isFollowed && !isSameUser ? (
               <Button leftIcon={<AiOutlineHeart />} variant={'outline'} colorScheme={'red'} onClick={handleFollowUnfollow} borderRadius={'full'}>
                 Seguir
@@ -124,27 +120,29 @@ export default function MyAccountPage ({ user }: AccountProps) {
             )}
           </Flex>
         </Grid>
-        <MyDestinations userId={String(user.id)} />
+        {/* <MyDestinations userId={String(user?.id)} /> */}
       </Grid>
     </>
   );
 }
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
-  const cookies = parseCookies(ctx);
-  const token = cookies['redsterna.token'];
+// export const getServerSideProps = withSSRAuth(async (ctx) => {
+//   const cookies = parseCookies(ctx);
+//   const token = cookies['redsterna.token'];
 
-  const response = await fetch('https://redsterna.herokuapp.com/user/me', {
-    headers: new Headers({
-      'Authorization': `Bearer ${token}`
-    })
-  });
+//   const response = await fetch('https://redsterna.herokuapp.com/user/me', {
+//     headers: new Headers({
+//       'Authorization': `Bearer ${token}`
+//     })
+//   });
 
-  const user = await response.json();
+//   // console.log(await response.json());
 
-  return {
-    props: {
-      user
-    },
-  };
-});
+//   const user = await response.json();
+
+//   return {
+//     props: {
+//       user
+//     },
+//   };
+// });

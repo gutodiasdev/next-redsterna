@@ -10,7 +10,7 @@ export function MyAccountCreateMenu () {
       </MenuButton>
       <MenuList>
         <MenuItem>Criar Destino</MenuItem>
-        <Link href={'/criar-roteiro'}>
+        <Link href={'/novo-roteiro'}>
           <MenuItem>Criar Roteiro</MenuItem>
         </Link>
       </MenuList>

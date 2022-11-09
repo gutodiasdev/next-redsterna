@@ -1,25 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Box, FormControl, Grid, Heading, Input, Spinner } from '@chakra-ui/react';
+import Head from 'next/head';
+import Image from 'next/image';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from "react";
+import { useQuery } from 'react-query';
+import { Map, Marker } from "pigeon-maps";
+import { osm } from "pigeon-maps/providers";
 import { NewHeader } from '../../components/NewHeader';
-import StarRating from "../../components/starRating";
 import { api } from '../../services/apiClient';
 
-import {
-  Container,
-  Header,
-  Image,
-  List,
-  Line,
-  Title,
-  Card,
-  Column,
-  Input,
-  Checkbox,
-  CheckboxContainer,
-  CheckboxLabel,
-} from "../../styles/list-itineraries";
 import { withSSRAuth } from '../../utils/withSSRAuth';
+
+type DestinationProps = {
+  id: string,
+  name: string,
+  countryCode: string,
+  stateCode: string,
+  latitude: string,
+  longitude: string,
+  roadmapId: string;
+};
 
 export default function ListItinerary () {
   const [itineraries, setItineraries] = useState<any>([]);
@@ -28,24 +29,6 @@ export default function ListItinerary () {
   const [interest, setInterest] = useState("");
   const [minPrice, setMinPrice] = useState<any>("");
   const [maxPrice, setMaxPrice] = useState<any>("");
-
-  const getItineraries = async (): Promise<void> => {
-    const response = await api.get("/itineraries/all");
-
-    setItineraries(response.data);
-    return;
-  };
-
-  const loadData = async (): Promise<void> => {
-    await getItineraries();
-  };
-
-  useEffect(() => {
-    (async () => {
-      await loadData();
-      return;
-    })();
-  }, []);
 
   const filteredByCitytineraries =
     city !== ""
@@ -72,10 +55,70 @@ export default function ListItinerary () {
       )
       : filteredByCategorytineraries;
 
+  const { data, error, isLoading } = useQuery(['destinations'], async () => {
+    const { data } = await api.get('/destinations/all');
+    return data;
+  }, {
+    staleTime: 1000 * 60 * 5
+  });
+
+  const handleClick = () => {
+    console.log('Clicked');
+  };
+
   return (
     <>
+      <Head>
+        <title>RedSterna - Todos os roteiros</title>
+      </Head>
+
       <NewHeader />
-      <Container>
+      <Box>
+        {/* <Box maxWidth={'1100px'} margin={'0 auto'} borderRadius={'lg'} overflow={'hidden'}>
+          <Image src='/images/desktop/itinerary/list.jpg' width={1100} height={300} alt='Todos os roteiros' />
+          <Heading mt={'-142px'} position={'absolute'} px={'32px'} color={'white'}>
+            Destinos
+          </Heading>
+        </Box> */}
+
+        <Grid as='form' my={'8px'} gridTemplateColumns={'1fr 1fr'}>
+          <Box p={'24px'} position={'sticky'}>
+            <FormControl>
+              <Heading mb={'16px'} fontSize={'1.25rem'}>
+                Procure por cidades
+              </Heading>
+              <Input type='text' size={'lg'} placeholder={'Ex.: São Paulo, Lima, Lisboa...'} borderColor={'gray.500'} _hover={{ borderColor: 'gray.500' }} />
+            </FormControl>
+          </Box>
+          <Box>
+            <Map
+              provider={osm}
+              height={512}
+              defaultCenter={[-23, -10]}
+              defaultZoom={4}
+              center={[-15.77972000, -47.92972000]}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : error ? (
+                <Heading as={'h2'}>
+                  Falha aos encontrar os itinerários
+                </Heading>
+              ) : (
+                data.destinations.map((destination: DestinationProps, index: number) => {
+                  return (
+                    <Marker key={index} offset={[0, -50]} anchor={[Number(destination.latitude), Number(destination.longitude)]} onClick={handleClick} color={'hsl(0, 100%, 50%)'} />
+                  );
+                })
+              )}
+            </Map>
+          </Box>
+        </Grid>
+      </Box>
+
+
+
+      {/* <Container>
         <Header>DESTINOS</Header>
         <Line fullWidth>
           <Title>Navegue pelos roteiros publicados</Title>
@@ -260,9 +303,10 @@ export default function ListItinerary () {
           ))
         ) : (
           <Title>Não há roteiros para serem listados</Title>
-        )} */}
+        )}
         </List>
-      </Container>
+      </Container> 
+    */}
     </>
   );
 }

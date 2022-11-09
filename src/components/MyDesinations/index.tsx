@@ -17,10 +17,12 @@ type MyDestinationsProps = {
 export function MyDestinations ({ userId }: MyDestinationsProps) {
 
   const { data, isLoading, error } = useQuery(['myDestinations'], async () => {
-    const { data } = await api.get(`/itineraries/user/${userId}`);
+    const { data } = await api.get(`/roadmaps/user?id=${userId}`);
 
-    return data;
+    return data.roadmaps;
   });
+
+  console.log(data);
 
   return (
     <>
@@ -33,7 +35,7 @@ export function MyDestinations ({ userId }: MyDestinationsProps) {
           <Flex w={'100%'} justify={'center'}>
             <Spinner />
           </Flex>
-        ) : (data.itineraries.length === 0) ? (
+        ) : (data.length === 0) ? (
           <Flex
             textAlign={'center'}
             flexDirection={'column'}
