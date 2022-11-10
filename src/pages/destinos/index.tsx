@@ -5,12 +5,13 @@ import Image from 'next/image';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from "react";
 import { useQuery } from 'react-query';
-import { Map, Marker } from "pigeon-maps";
+import { Map, Marker, Point, ZoomControl } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
 import { NewHeader } from '../../components/NewHeader';
 import { api } from '../../services/apiClient';
 
 import { withSSRAuth } from '../../utils/withSSRAuth';
+import { BsBoxArrowInLeft } from 'react-icons/bs';
 
 type DestinationProps = {
   id: string,
@@ -20,6 +21,20 @@ type DestinationProps = {
   latitude: string,
   longitude: string,
   roadmapId: string;
+};
+
+type ClickPointHandler = {
+  event: any,
+  anchor: Point,
+  payload: {
+    countryCode: string;
+    id: string;
+    latitude: string;
+    longitude: string;
+    name: string;
+    roadmapId: string;
+    stateCode: string;
+  };
 };
 
 export default function ListItinerary () {
@@ -62,9 +77,11 @@ export default function ListItinerary () {
     staleTime: 1000 * 60 * 5
   });
 
-  const handleClick = () => {
-    console.log('Clicked');
+  const handleClick = ({ event, anchor, payload }: ClickPointHandler) => {
+    console.log(payload, anchor);
   };
+
+  console.log(data);
 
   return (
     <>
@@ -73,240 +90,40 @@ export default function ListItinerary () {
       </Head>
 
       <NewHeader />
-      <Box>
-        {/* <Box maxWidth={'1100px'} margin={'0 auto'} borderRadius={'lg'} overflow={'hidden'}>
-          <Image src='/images/desktop/itinerary/list.jpg' width={1100} height={300} alt='Todos os roteiros' />
-          <Heading mt={'-142px'} position={'absolute'} px={'32px'} color={'white'}>
-            Destinos
-          </Heading>
-        </Box> */}
-
+      <Box overflowWrap={'normal'}>
         <Grid as='form' my={'8px'} gridTemplateColumns={'1fr 1fr'}>
-          <Box p={'24px'} position={'sticky'}>
+          <Box px={'24px'} position={'sticky'}>
             <FormControl>
-              <Heading mb={'16px'} fontSize={'1.25rem'}>
+              <Heading mb={'16px'} fontSize={'1.25rem'} fontWeight={'normal'}>
                 Procure por cidades
               </Heading>
               <Input type='text' size={'lg'} placeholder={'Ex.: São Paulo, Lima, Lisboa...'} borderColor={'gray.500'} _hover={{ borderColor: 'gray.500' }} />
             </FormControl>
           </Box>
-          <Box>
-            <Map
-              provider={osm}
-              height={512}
-              defaultCenter={[-23, -10]}
-              defaultZoom={4}
-              center={[-15.77972000, -47.92972000]}
-            >
-              {isLoading ? (
-                <Spinner />
-              ) : error ? (
-                <Heading as={'h2'}>
-                  Falha aos encontrar os itinerários
-                </Heading>
-              ) : (
-                data.destinations.map((destination: DestinationProps, index: number) => {
-                  return (
-                    <Marker key={index} offset={[0, -50]} anchor={[Number(destination.latitude), Number(destination.longitude)]} onClick={handleClick} color={'hsl(0, 100%, 50%)'} />
-                  );
-                })
-              )}
-            </Map>
-          </Box>
+          <Map
+            provider={osm}
+            height={512}
+            defaultZoom={3}
+            defaultCenter={[-15.77972000, -47.92972000]}
+            minZoom={3}
+          >
+            <ZoomControl />
+            {isLoading ? (
+              <Spinner />
+            ) : error ? (
+              <Heading as={'h2'}>
+                Falha aos encontrar os itinerários
+              </Heading>
+            ) : (
+              data.destinations.map((destination: DestinationProps, index: number) => {
+                return (
+                  <Marker key={index} offset={[0, -50]} anchor={[Number(destination.latitude), Number(destination.longitude)]} onClick={({ event, anchor, payload }) => handleClick({ event, anchor, payload: destination })} color={'hsl(0, 100%, 50%)'} />
+                );
+              })
+            )}
+          </Map>
         </Grid>
       </Box>
-
-
-
-      {/* <Container>
-        <Header>DESTINOS</Header>
-        <Line fullWidth>
-          <Title>Navegue pelos roteiros publicados</Title>
-        </Line>
-        <Line fullWidth style={{ justifyContent: "space-between" }}>
-          <Input
-            type="text"
-            placeholder="Procurar por cidade..."
-            onChange={(e) => setCity(e.target.value)}
-            value={city}
-          />
-          <div>
-            <Input
-              type="number"
-              placeholder="Valor Minimo"
-              onChange={(e) => setMinPrice(Number(e.target.value))}
-              step="0.01"
-              min="0"
-              value={minPrice}
-            />
-            <Input
-              type="number"
-              placeholder="Valor Maximo"
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              step="0.01"
-              min="0"
-              value={maxPrice}
-            />
-          </div>
-        </Line>
-        <Line fullWidth>
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="cidade histórica"
-              checked={!!(interest === "cidade histórica")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Cidade Histórica</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="praia"
-              checked={!!(interest === "praia")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Praia</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="montanha"
-              checked={!!(interest === "montanha")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Montanha</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="camping"
-              checked={!!(interest === "camping")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Camping</CheckboxLabel>
-          </CheckboxContainer>
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="cidade moderna"
-              checked={!!(interest === "cidade moderna")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Cidade Moderna</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="campo"
-              checked={!!(interest === "campo")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Campo</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="cachoeira"
-              checked={!!(interest === "cachoeira")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Cachoeira</CheckboxLabel>
-          </CheckboxContainer>
-
-          <CheckboxContainer>
-            <Checkbox
-              onChange={(e: any) =>
-                interest === e.target.value
-                  ? setInterest("")
-                  : setInterest(e.target.value)
-              }
-              value="trekking"
-              checked={!!(interest === "trekking")}
-              type="checkbox"
-            />
-            <CheckboxLabel>Trekking</CheckboxLabel>
-          </CheckboxContainer>
-        </Line>
-        <List>
-          {/* {filteredtineraries.length > 0 ? (
-          filteredtineraries.map((itinerary: any, index: any) => (
-            <Card
-              key={itinerary._id}
-              to={{
-                pathname: `/destino/${itinerary._id}`,
-                state: { itinerary },
-              }}
-            >
-              <Line>
-                <Column>
-                  <Image
-                    cover={
-                      itinerary.cover
-                        ? itinerary.cover
-                        : "/images/desktop/home/redsterna_gray_logo.png"
-                    }
-                  />
-                </Column>
-                <Column>
-                  <h4>{itinerary.title}</h4>
-                </Column>
-              </Line>
-              <Column>
-                {itinerary?.rate?.quantity <= 0 ? (
-                  <span style={{ fontSize: 11 }}>Ainda não há avaliações</span>
-                ) : (
-                  <Line>
-                    <StarRating
-                      value={Number(
-                        itinerary.rate.media / itinerary.rate.quantity
-                      )}
-                    />
-                    <span>{itinerary?.rate.quantity} avaliações</span>
-                  </Line>
-                )}
-              </Column>
-            </Card>
-          ))
-        ) : (
-          <Title>Não há roteiros para serem listados</Title>
-        )}
-        </List>
-      </Container> 
-    */}
     </>
   );
 }
