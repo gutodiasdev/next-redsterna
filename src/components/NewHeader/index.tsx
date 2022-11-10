@@ -29,7 +29,7 @@ export function NewHeader ({ name }: HeaderProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { data, isLoading } = useQuery(['user', String(user?.id)], async () => {
-    const { data } = await api.get<UserProfile>(`/user/profile/${String(user?.id)}`);
+    const { data } = await api.get<UserProfile>(`/user/me`);
 
     return data;
   }, {

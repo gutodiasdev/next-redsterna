@@ -63,7 +63,7 @@ export default function Profile () {
 
   const { data, isLoading, error } = useQuery([user._id, 'data'], async () => {
     const { data: itineraries } = await api.get(`/itineraries/user/${String(userData?.id)}`);
-    const { data: userProfile } = await api.get(`/user/profile/${String(userData?.id)}`);
+    const { data: userProfile } = await api.get(`/user/me`);
     const { data: followers } = await api.get(`/user/followersFrom/${String(userData?.id)}`);
     const { data: followees } = await api.get(`/user/followeesFrom/${String(userData?.id)}`);
 

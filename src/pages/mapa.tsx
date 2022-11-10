@@ -26,7 +26,7 @@ type AccountProps = {
 export default function Map ({ user }: AccountProps) {
 
   const { data, isLoading } = useQuery(['user', user.id], async () => {
-    const { data } = await api.get<UserProfile>(`/user/profile/${user.id}`);
+    const { data } = await api.get<UserProfile>(`/user/me`);
 
     return data;
   }, {
