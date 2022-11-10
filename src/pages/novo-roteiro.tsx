@@ -1,30 +1,29 @@
 import React, { useContext, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { useItineraries } from '../contexts/itinerary.context';
 import { withSSRAuth } from '../utils/withSSRAuth';
 import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
-import { Box, Button, Checkbox, CircularProgress, CircularProgressLabel, Divider, filter, Flex, FormControl, FormLabel, Grid, Heading, HStack, Icon, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, CircularProgress, CircularProgressLabel, Divider, Flex, FormControl, FormLabel, Grid, Heading, HStack, Icon, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsUpload } from 'react-icons/bs';
 import { City } from 'country-state-city';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { api } from '../services/apiClient';
 import Image from 'next/image';
 import { AxiosRequestConfig } from 'axios';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import { GiField } from 'react-icons/gi';
+import { useRouter } from 'next/router';
 
 type FormProps = {
   roadmap_type: string;
   title: string;
-  trip_date: string;
+  tripDate: string;
   best_description: string[];
   roadmap_cover: string;
-  trip_days: number;
-  person_cost: string;
-  trip_review: string;
+  daysOnTrip: number;
+  perPersonCost: string;
+  roadmapReview: string;
 };
 
 type CityProps = {
@@ -34,20 +33,35 @@ type CityProps = {
   name: string;
   stateCode: string;
 };
+type DestinationProps = {
+  name: string,
+  countryCode: string,
+  stateCode: string,
+  latitude: string,
+  longitude: string,
+  hotel: string,
+  hotelRate: number,
+  cityRate: number;
+  images: Array<string>;
+  destinationReview: string;
+};
 
 export default function Itinerary () {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isSending, setIsSending] = useState(false);
-  const [checked, setChecked] = useState<Array<string>>([]);
+  const [tripNiche, setTripNiche] = useState<Array<string>>([]);
+  const [isDone, setIsDone] = useState<boolean>(true);
   const [isFilteringCity, setIsFilteringCity] = useState(false);
   const [filteredCities, setFilteredCities] = useState<Array<CityProps>>([]);
+  const [destinations, setDestinations] = useState<Array<DestinationProps>>([]);
+  const [destinationImages, setDestinationImages] = useState<Array<string>>([]);
 
-  const { uploadFile } = useItineraries();
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const [roadmapImage, setRoadmapImage] = useState('');
-  const { register, formState: { isSubmitting } } = useForm<FormProps>();
+  const { register, formState: { isSubmitting }, handleSubmit } = useForm<FormProps>();
 
   const { data: allCities } = useQuery(['allCities'], City.getAllCities, { staleTime: 1000 * 60 * 60 * 24 });
 
@@ -57,6 +71,7 @@ export default function Itinerary () {
   };
 
   const removeItinerary = (index: number) => {
+    destinations.splice(index, 1);
     setIndexes(prevIndexes => [...prevIndexes.filter((item) => item !== index)]);
     setCounter(prevCounter => prevCounter - 1);
   };
@@ -70,6 +85,7 @@ export default function Itinerary () {
 
   const uploadFileCallback = async (file: any) => {
     try {
+      setIsSending(true);
       const formData = new FormData();
       formData.append('file', file[0] as File);
       api.post('/roadmaps/upload', formData, config)
@@ -77,13 +93,53 @@ export default function Itinerary () {
           const { source } = response.data;
           setRoadmapImage(source);
         });
+      setIsSending(false);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleCreateRoadMap: SubmitHandler<FormProps> = (values) => {
-    console.log(values);
+  const uploadDestinationFile = async (file: any, index: number) => {
+    try {
+      setIsSending(true);
+      const formData = new FormData();
+      formData.append('file', file[0] as File);
+      api.post('/roadmaps/upload', formData, config)
+        .then(response => {
+          const { source } = response.data;
+          setDestinationImages([...destinationImages, source]);
+        });
+      setIsSending(false);
+      destinations[index].images = destinationImages;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const mutation = useMutation(async (values: any) => {
+    const roadmap = await api.post('/roadmaps/create', {
+      ...values,
+      daysOnTrip: Number(values.daysOnTrip),
+      author: String(user?.id),
+      cover: roadmapImage,
+      made: isDone,
+      interests: tripNiche,
+      rate: 5,
+      destinations: destinations
+    });
+    router.push(`/destinos/${roadmap.data.id}`);
+  }, {
+    onSuccess: () => {
+      console.log('success');
+    }
+  });
+
+  const handleCreateRoadMap: SubmitHandler<FormProps> = async (values) => {
+    try {
+      await mutation.mutateAsync(values);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   function handleFilterCities (value: string) {
@@ -97,14 +153,25 @@ export default function Itinerary () {
     }
   }
 
-  const handleCheck = (event: any) => {
-    var updatedList = [...checked];
-    if (event.target.checked) {
-      updatedList = [...checked, event.target.value];
+  function handleSelectCity (event: any) {
+    let updatedList = [...destinations];
+    setIsFilteringCity(false);
+    if (event) {
+      updatedList = [...destinations, event];
     } else {
-      updatedList.splice(checked.indexOf(event.target.value), 1);
+      updatedList.splice(destinations.indexOf(event), 1);
     }
-    setChecked(updatedList);
+    setDestinations(updatedList);
+  }
+
+  const handleCheck = (event: any) => {
+    let updatedList = [...tripNiche];
+    if (event.target.checked) {
+      updatedList = [...tripNiche, event.target.value];
+    } else {
+      updatedList.splice(tripNiche.indexOf(event.target.value), 1);
+    }
+    setTripNiche(updatedList);
   };
 
   return (
@@ -117,7 +184,7 @@ export default function Itinerary () {
         <Heading mb={'32px'}>
           Criar Roteiro
         </Heading>
-        <VStack as='form' spacing={'24px'}>
+        <VStack as='form' spacing={'24px'} onSubmit={handleSubmit(handleCreateRoadMap)}>
           <FormControl>
             <Text mb={'8px'}>Foto de capa</Text>
             <FormLabel
@@ -167,10 +234,10 @@ export default function Itinerary () {
             <RadioGroup defaultValue={'done'}>
               <HStack spacing={'80px'}>
                 <Box border={'1px'} borderRadius={'lg'} p={'8px 16px'}>
-                  <Radio colorScheme={'red'} value='done'>Já fiz este Roteiro</Radio>
+                  <Radio colorScheme={'red'} onChange={(e) => setIsDone(true)} value='done' checked>Já fiz este Roteiro</Radio>
                 </Box>
                 <Box border={'1px'} borderRadius={'lg'} p={'8px 16px'}>
-                  <Radio colorScheme={'red'} value='planned'>Estou planejando este Roteiro</Radio>
+                  <Radio colorScheme={'red'} onChange={(e) => setIsDone(false)} value='not done'>Estou planejando este Roteiro</Radio>
                 </Box>
               </HStack>
             </RadioGroup>
@@ -181,7 +248,7 @@ export default function Itinerary () {
           </FormControl>
           <FormControl>
             <FormLabel htmlFor='tripDate'>Data da Viagem</FormLabel>
-            <Input type='date' {...register('trip_date')} borderColor={'gray.600'} size={'lg'} _hover={{ boderColor: 'gray.600' }} w={'50%'} />
+            <Input type='date' {...register('tripDate')} borderColor={'gray.600'} size={'lg'} _hover={{ boderColor: 'gray.600' }} w={'50%'} />
           </FormControl>
           <FormControl>
             <FormLabel htmlFor='tripDate'>Quais dessas opções melhor descrevem essa viagem?</FormLabel>
@@ -199,16 +266,16 @@ export default function Itinerary () {
           <Grid gridTemplateColumns={'1fr 1fr'} w={'100%'} gap={'24px'}>
             <FormControl>
               <FormLabel>Dias de viagem</FormLabel>
-              <Input type='number' {...register('trip_days')} borderColor={'gray.600'} size={'lg'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} />
+              <Input type='number' {...register('daysOnTrip')} borderColor={'gray.600'} size={'lg'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} />
             </FormControl>
             <FormControl>
               <FormLabel>Custo total por pessoa</FormLabel>
-              <Input type='number' {...register('trip_days')} borderColor={'gray.600'} size={'lg'} placeholder={'R$ 0.0'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} />
+              <Input type='number' {...register('perPersonCost')} borderColor={'gray.600'} size={'lg'} placeholder={'R$ 0.0'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} />
             </FormControl>
           </Grid>
           <FormControl>
             <FormLabel>Resumo da viagem</FormLabel>
-            <Textarea {...register('trip_review')} borderColor={'gray.600'} size={'lg'} placeholder={'Quais cidades você visitou? O que viu de bacana? Quais os pontos fortes e fracos? Divida suas experiências com a gente!'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} height={'200px'} />
+            <Textarea {...register('roadmapReview')} borderColor={'gray.600'} size={'lg'} placeholder={'Quais cidades você visitou? O que viu de bacana? Quais os pontos fortes e fracos? Divida suas experiências com a gente!'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} height={'200px'} />
           </FormControl>
 
           <Divider />
@@ -235,7 +302,7 @@ export default function Itinerary () {
                           {
                             filteredCities.map((city: CityProps, index) => {
                               return (
-                                <Flex key={index} width={'100%'} justifyContent={'space-between'} _hover={{ backgroundColor: 'gray.200' }} cursor={'pointer'} my={'8px'}>
+                                <Flex key={index} width={'100%'} justifyContent={'space-between'} _hover={{ backgroundColor: 'gray.200' }} cursor={'pointer'} my={'8px'} onClick={(e) => handleSelectCity(city)}>
                                   <Text>{city.name}</Text>
                                   <Flex gap={'16px'}>
                                     <Text>{city.stateCode}, </Text>
@@ -251,43 +318,54 @@ export default function Itinerary () {
                   </FormControl>
                   <FormControl>
                     <FormLabel>Avaliação</FormLabel>
-                    <Input type='text' borderColor={'gray.600'} size={'lg'} />
+                    <Input type='number' borderColor={'gray.600'} size={'lg'} onChange={(e) => destinations[index].cityRate = Number(e.target.value)} />
                   </FormControl>
                 </Grid>
                 <Grid gridTemplateColumns={'1fr auto'} gap={'24px'} mt={'32px'}>
                   <FormControl>
                     <FormLabel>Hospedagem</FormLabel>
-                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} />
+                    <Input type='text' borderColor={'gray.600'} _hover={{ boderColor: 'gray.600' }} size={'lg'} onChange={(e) => destinations[index].hotel = e.target.value} />
                   </FormControl>
                   <FormControl>
                     <FormLabel>Avaliação</FormLabel>
-                    <Input type='text' borderColor={'gray.600'} size={'lg'} />
+                    <Input type='number' borderColor={'gray.600'} size={'lg'} onChange={(e) => destinations[index].hotelRate = Number(e.target.value)} />
                   </FormControl>
                 </Grid>
                 <FormControl mt={'24px'}>
                   <FormLabel>Resumo da viagem</FormLabel>
-                  <Textarea borderColor={'gray.600'} size={'lg'} placeholder={'Quais cidades você visitou? O que viu de bacana? Quais os pontos fortes e fracos? Divida suas experiências com a gente!'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} height={'200px'} />
+                  <Textarea borderColor={'gray.600'} size={'lg'} placeholder={'Quais cidades você visitou? O que viu de bacana? Quais os pontos fortes e fracos? Divida suas experiências com a gente!'} _placeholder={{ color: 'gray.400' }} _hover={{ boderColor: 'gray.600' }} height={'200px'} onChange={(e) => destinations[index].destinationReview = e.target.value} />
                 </FormControl>
                 <FormControl mt={'24px'}>
                   <Text mb={'8px'}>Imagens da viagem</Text>
-                  <FormLabel
-                    display={'flex'}
-                    cursor={'pointer'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    border={'1px'}
-                    borderColor={'gray.400'}
-                    borderStyle={'dashed'}
-                    borderRadius={'lg'}
-                    height={'200px'}
-                    width={'200px'}
-                  >
-                    <VStack textAlign={'center'}>
-                      <BsUpload />
-                      <Text>Adicionar imagem</Text>
-                    </VStack>
-                    <Input type='file' display={'none'} />
-                  </FormLabel>
+                  <Flex gap={'16px'}>
+                    {
+                      destinationImages !== null ? (
+                        destinationImages.map((image: string, index: number) => {
+                          return (
+                            <Image key={index} src={image} alt={'Image'} width={200} height={200} />
+                          );
+                        })
+                      ) : null
+                    }
+                    <FormLabel
+                      display={'flex'}
+                      cursor={'pointer'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      border={'1px'}
+                      borderColor={'gray.400'}
+                      borderStyle={'dashed'}
+                      borderRadius={'lg'}
+                      height={'200px'}
+                      width={'200px'}
+                    >
+                      <VStack textAlign={'center'}>
+                        <BsUpload />
+                        <Text>Adicionar imagem</Text>
+                      </VStack>
+                      <Input type='file' display={'none'} onChange={(e) => uploadDestinationFile(e.target.files, index)} />
+                    </FormLabel>
+                  </Flex>
                 </FormControl>
 
                 <Button onClick={() => removeItinerary(index)} variant={'outline'} colorScheme={'red'} float={'right'} mt={'32px'}>

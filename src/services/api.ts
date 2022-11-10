@@ -12,7 +12,6 @@ export function setupAPIClient (ctx = undefined) {
 
   api = axios.create({
     baseURL: "https://redsterna.herokuapp.com/",
-    // baseURL: "http://localhost:3001",
     headers: {
       Authorization: `Bearer ${cookies['redsterna.token']}`
     }
