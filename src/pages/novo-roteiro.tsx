@@ -5,11 +5,16 @@ import { withSSRAuth } from '../utils/withSSRAuth';
 import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
-import { Box, Button, Checkbox, Divider, filter, Flex, FormControl, FormLabel, Grid, Heading, HStack, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, CircularProgress, CircularProgressLabel, Divider, filter, Flex, FormControl, FormLabel, Grid, Heading, HStack, Icon, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsUpload } from 'react-icons/bs';
 import { City } from 'country-state-city';
 import { useQuery } from 'react-query';
+import { api } from '../services/apiClient';
+import Image from 'next/image';
+import { AxiosRequestConfig } from 'axios';
+import { AiFillCloseCircle } from 'react-icons/ai';
+import { GiField } from 'react-icons/gi';
 
 type FormProps = {
   roadmap_type: string;
@@ -33,11 +38,15 @@ type CityProps = {
 export default function Itinerary () {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isSending, setIsSending] = useState(false);
+  const [checked, setChecked] = useState<Array<string>>([]);
   const [isFilteringCity, setIsFilteringCity] = useState(false);
   const [filteredCities, setFilteredCities] = useState<Array<CityProps>>([]);
 
   const { uploadFile } = useItineraries();
   const { user } = useContext(AuthContext);
+  const [roadmapImage, setRoadmapImage] = useState('');
   const { register, formState: { isSubmitting } } = useForm<FormProps>();
 
   const { data: allCities } = useQuery(['allCities'], City.getAllCities, { staleTime: 1000 * 60 * 60 * 24 });
@@ -52,10 +61,25 @@ export default function Itinerary () {
     setCounter(prevCounter => prevCounter - 1);
   };
 
-  const uploadFileCallback = async (file: any) => {
-    const response = await uploadFile(file);
+  const config = {
+    headers: { 'content-type': 'multipart/form-data' },
+    onUploadProgress: (e: ProgressEvent) => {
+      setProgress(Math.round((e.loaded * 100) / e.total));
+    },
+  } as AxiosRequestConfig;
 
-    return response;
+  const uploadFileCallback = async (file: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file[0] as File);
+      api.post('/roadmaps/upload', formData, config)
+        .then(response => {
+          const { source } = response.data;
+          setRoadmapImage(source);
+        });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleCreateRoadMap: SubmitHandler<FormProps> = (values) => {
@@ -73,7 +97,15 @@ export default function Itinerary () {
     }
   }
 
-  console.log(filteredCities);
+  const handleCheck = (event: any) => {
+    var updatedList = [...checked];
+    if (event.target.checked) {
+      updatedList = [...checked, event.target.value];
+    } else {
+      updatedList.splice(checked.indexOf(event.target.value), 1);
+    }
+    setChecked(updatedList);
+  };
 
   return (
     <>
@@ -90,7 +122,6 @@ export default function Itinerary () {
             <Text mb={'8px'}>Foto de capa</Text>
             <FormLabel
               display={'flex'}
-              cursor={'pointer'}
               justifyContent={'center'}
               alignItems={'center'}
               border={'1px'}
@@ -99,12 +130,36 @@ export default function Itinerary () {
               borderRadius={'lg'}
               height={'200px'}
               width={'100%'}
+              cursor={isSending ? 'progress' : 'pointer'}
+              opacity={isSending ? 0.5 : 1}
             >
-              <VStack textAlign={'center'}>
-                <BsUpload />
-                <Text>Faça o upload da imagem de capa</Text>
-              </VStack>
-              <Input type='file' display={'none'} />
+              {
+                roadmapImage && !isSending ? (
+                  <Box width={1100} height={200} borderRadius={'lg'} overflow={'hidden'} position={'relative'}>
+                    <Icon as={AiFillCloseCircle} position={'absolute'} zIndex={99} color={'red'} right={1} top={1} backgroundColor={'white'} borderRadius={'full'} />
+                    <Image src={roadmapImage} alt='roadmap cover' fill />
+                  </Box>
+                ) : (
+                  <VStack textAlign={'center'}>
+                    {isSending ? (
+                      <>
+                        <CircularProgress
+                          trackColor="pGray.200"
+                          value={progress}
+                          color="orange.500"
+                        >
+                          <CircularProgressLabel>{progress}%</CircularProgressLabel>
+                        </CircularProgress>
+                        <Text as="span" pt={2} textAlign="center">
+                          Enviando...
+                        </Text>
+                      </>
+                    ) : (
+                      <Input type='file' border={'none'} onChange={(e) => uploadFileCallback(e.target.files)} />
+                    )}
+                  </VStack>
+                )
+              }
             </FormLabel>
           </FormControl>
           <FormControl>
@@ -131,14 +186,14 @@ export default function Itinerary () {
           <FormControl>
             <FormLabel htmlFor='tripDate'>Quais dessas opções melhor descrevem essa viagem?</FormLabel>
             <Grid gridTemplateColumns={'1fr 1fr'}>
-              <Checkbox colorScheme={'red'} value='historical_city'>Cidade Histórica</Checkbox>
-              <Checkbox colorScheme={'red'} value='modern_city'>Cidade Moderna</Checkbox>
-              <Checkbox colorScheme={'red'} value='beach'>Praia</Checkbox>
-              <Checkbox colorScheme={'red'} value='countryside'>Campo</Checkbox>
-              <Checkbox colorScheme={'red'} value='mountain'>Montanha</Checkbox>
-              <Checkbox colorScheme={'red'} value='cachoeira'>Cachoeira</Checkbox>
-              <Checkbox colorScheme={'red'} value='camping'>Camping</Checkbox>
-              <Checkbox colorScheme={'red'} value='trekking'>Trekking</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='historical_city'>Cidade Histórica</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='modern_city'>Cidade Moderna</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='beach'>Praia</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='countryside'>Campo</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='mountain'>Montanha</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='cachoeira'>Cachoeira</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='camping'>Camping</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='trekking'>Trekking</Checkbox>
             </Grid>
           </FormControl>
           <Grid gridTemplateColumns={'1fr 1fr'} w={'100%'} gap={'24px'}>

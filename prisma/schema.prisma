@@ -32,102 +32,6 @@ model Follows {
   User       User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
 }
 
-model Itineraries {
-  id                    String                  @id
-  author                String
-  cover                 String?
-  createdAt             DateTime                @default(now())
-  days                  Int
-  interests             String[]
-  made                  Boolean
-  rate                  Int
-  spent                 String
-  title                 String
-  tripDate              String
-  model                 String
-  User                  User                    @relation(fields: [author], references: [id])
-  ItinerariesOnRoadmaps ItinerariesOnRoadmaps[]
-  ItinerariesRate       ItinerariesRate?
-  ItinerariesSimple     ItinerariesSimple?
-  ItineraryComment      ItineraryComment[]
-}
-
-model ItinerariesOnRoadmaps {
-  id            String      @id
-  itinerariesId String
-  roadmapsId    String
-  Itineraries   Itineraries @relation(fields: [itinerariesId], references: [id])
-  Roadmaps      Roadmaps    @relation(fields: [roadmapsId], references: [id])
-}
-
-model ItinerariesRate {
-  id            String      @id
-  media         Int
-  quantity      Int
-  itinerariesId String      @unique
-  Itineraries   Itineraries @relation(fields: [itinerariesId], references: [id])
-}
-
-model ItinerariesSimple {
-  id                      String                    @id
-  summary                 String?
-  itinerariesId           String                    @unique
-  Itineraries             Itineraries               @relation(fields: [itinerariesId], references: [id])
-  ItinerariesSimpleCities ItinerariesSimpleCities[]
-}
-
-model ItinerariesSimpleCities {
-  id                                    String                                  @id
-  description                           String
-  images                                String[]
-  name                                  String
-  rate                                  Int
-  itinerariesSimpleId                   String
-  ItinerariesSimple                     ItinerariesSimple                       @relation(fields: [itinerariesSimpleId], references: [id])
-  ItinerariesSimpleCitiesAccommodations ItinerariesSimpleCitiesAccommodations[]
-  ItinerariesSimpleCitiesCoordinates    ItinerariesSimpleCitiesCoordinates[]
-}
-
-model ItinerariesSimpleCitiesAccommodations {
-  id                        String                  @id
-  name                      String
-  rate                      Int
-  itinerariesSimpleCitiesId String
-  ItinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
-}
-
-model ItinerariesSimpleCitiesCoordinates {
-  id                        String                  @id
-  latitude                  Json
-  longitude                 Json
-  itinerariesSimpleCitiesId String
-  ItinerariesSimpleCities   ItinerariesSimpleCities @relation(fields: [itinerariesSimpleCitiesId], references: [id])
-}
-
-model ItineraryComment {
-  id          String      @id
-  content     String
-  itineraryId String
-  author      String
-  User        User        @relation(fields: [author], references: [id])
-  Itineraries Itineraries @relation(fields: [itineraryId], references: [id])
-}
-
-model RoadmapComment {
-  id        String   @id
-  content   String
-  roadmapId String
-  author    String
-  User      User     @relation(fields: [author], references: [id])
-  Roadmaps  Roadmaps @relation(fields: [roadmapId], references: [id])
-}
-
-model Roadmaps {
-  id                    String                  @id
-  ItinerariesOnRoadmaps ItinerariesOnRoadmaps[]
-  RoadmapComment        RoadmapComment[]
-}
-
 model Session {
   id           String   @id
   sessionToken String   @unique
@@ -137,34 +41,33 @@ model Session {
 }
 
 model User {
-  id               String             @id
-  name             String?
-  email            String?            @unique
-  emailVerified    DateTime?
-  image            String?
-  firstname        String?
-  lastname         String?
-  gender           String?
-  about            String?
-  birthdate        String?
-  confirmPolicy    Boolean            @default(false)
-  country          String?
-  ranking          String?
-  interests        String[]
-  username         String?            @unique
-  password         String?
-  favorites        Json?
-  role             ROLE               @default(user)
-  Account          Account[]
-  Follows          Follows[]
-  Itineraries      Itineraries[]
-  ItineraryComment ItineraryComment[]
-  RoadmapComment   RoadmapComment[]
-  Session          Session[]
-  UsersPictures    UsersPictures?
-  UsersSocial      UsersSocial?
-  city_card        city_card[]
-  refresh_token    refresh_token?
+  id                  String                @id
+  name                String?
+  email               String?               @unique
+  emailVerified       DateTime?
+  image               String?
+  firstname           String?
+  lastname            String?
+  gender              String?
+  about               String?
+  birthdate           String?
+  confirmPolicy       Boolean               @default(false)
+  country             String?
+  ranking             String?
+  interests           String[]
+  username            String?               @unique
+  password            String?
+  favorites           Json?
+  role                ROLE                  @default(user)
+  Account             Account[]
+  CityCard            CityCard[]
+  DestinationComments DestinationComments[]
+  Follows             Follows[]
+  Roadmap             Roadmap[]
+  Session             Session[]
+  UsersPictures       UsersPictures?
+  UsersSocial         UsersSocial?
+  refresh_token       refresh_token?
 }
 
 model UsersPictures {
@@ -191,28 +94,76 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model affiliate_script {
-  id           String    @id
-  script       String
-  city_card_id String
-  city_card    city_card @relation(fields: [city_card_id], references: [id])
-}
-
-model city_card {
-  id               String             @id
-  image            String
-  name             String
-  description      String
-  author           String
-  User             User               @relation(fields: [author], references: [id])
-  affiliate_script affiliate_script[]
-}
-
 model refresh_token {
   id        String @id
   expiresIn Int
   userId    String @unique
   User      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AffiliateScript {
+  id           String   @id
+  script       String
+  city_card_id String
+  CityCard     CityCard @relation(fields: [city_card_id], references: [id])
+}
+
+model CityCard {
+  id              String            @id
+  image           String
+  name            String
+  description     String
+  author          String
+  User            User              @relation(fields: [author], references: [id])
+  AffiliateScript AffiliateScript[]
+}
+
+model Destination {
+  id                  String                @id
+  name                String
+  countryCode         String
+  stateCode           String
+  latitude            String
+  longitude           String
+  roadmapId           String
+  images              String[]
+  Roadmap             Roadmap               @relation(fields: [roadmapId], references: [id])
+  DestinationComments DestinationComments[]
+}
+
+model DestinationComments {
+  id            String      @id
+  author        String
+  content       String
+  destinationId String
+  User          User        @relation(fields: [author], references: [id])
+  Destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+}
+
+model Roadmap {
+  id              String            @id
+  author          String
+  cover           String?
+  made            Boolean
+  title           String
+  tripDate        String
+  daysOnTrip      Int
+  interests       String[]
+  perPersonCost   String
+  roadmapReview   String
+  createdAt       DateTime          @default(now())
+  rate            Int
+  User            User              @relation(fields: [author], references: [id])
+  Destination     Destination[]
+  RoadmapComments RoadmapComments[]
+}
+
+model RoadmapComments {
+  id        String  @id
+  author    String
+  content   String
+  roadmapId String
+  Roadmap   Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
 }
 
 enum ROLE {
