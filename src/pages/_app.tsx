@@ -4,7 +4,6 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ToastContainer } from "react-toastify";
-import { RecoilRoot } from 'recoil';
 import { createGlobalStyle } from "styled-components";
 
 import { AuthProvider } from '../contexts/AuthContext';
@@ -43,15 +42,13 @@ export default function App ({ Component, pageProps }: AppProps<{ session: Sessi
     <SessionProvider session={pageProps.session}>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <RecoilRoot>
-            <ChakraProvider>
-              <ItinerariesProvider>
-                <GlobalStyle />
-                <ToastContainer />
-                <Component {...pageProps} />
-              </ItinerariesProvider>
-            </ChakraProvider>
-          </RecoilRoot>
+          <ChakraProvider>
+            <ItinerariesProvider>
+              <GlobalStyle />
+              <ToastContainer />
+              <Component {...pageProps} />
+            </ItinerariesProvider>
+          </ChakraProvider>
         </QueryClientProvider >
       </AuthProvider>
     </SessionProvider>

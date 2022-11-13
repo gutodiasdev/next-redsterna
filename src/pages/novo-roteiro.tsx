@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { withSSRAuth } from '../utils/withSSRAuth';
-import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
 import { Box, Button, Checkbox, CircularProgress, CircularProgressLabel, Divider, Flex, FormControl, FormLabel, Grid, Heading, HStack, Icon, Input, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
@@ -176,10 +175,7 @@ export default function Itinerary () {
 
   return (
     <>
-      <Head>
-        <title>Crie um roteiro - RedSterna</title>
-      </Head>
-      <NewHeader />
+      <NewHeader pageTitle='Crie um roteiro - RedSterna' />
       <Box w={'1100px'} margin={'0 auto'} my={'32px'}>
         <Heading mb={'32px'}>
           Criar Roteiro

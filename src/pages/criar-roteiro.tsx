@@ -2,15 +2,11 @@ import { Field, FieldArray, Formik, useFormikContext } from "formik";
 import React, { useContext } from "react";
 import { toast } from "react-toastify";
 
-import CityForm from "../components/cities";
-
 import "react-toastify/dist/ReactToastify.css";
 import * as S from "../styles/create-itineraries";
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useItineraries } from '../contexts/itinerary.context';
 import { withSSRAuth } from '../utils/withSSRAuth';
-import Head from 'next/head';
 import { AuthContext } from '../contexts/AuthContext';
 import { NewHeader } from '../components/NewHeader';
 import { Box, Heading } from '@chakra-ui/react';
@@ -70,10 +66,7 @@ const Itinerary = () => {
 
   return (
     <>
-      <Head>
-        <title>Crie um roteiro - RedSterna</title>
-      </Head>
-      <NewHeader />
+      <NewHeader pageTitle='Crie um roteiro - RedSterna' />
       <Box w={'1100px'} margin={'0 auto'} my={'32px'}>
         <Heading>
           Criar Roteiro

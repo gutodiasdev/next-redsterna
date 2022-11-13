@@ -1,4 +1,5 @@
 import { Flex, HStack, Avatar, Icon, Divider, Menu, MenuList, MenuGroup, MenuItem, MenuButton, MenuDivider, useDisclosure, Skeleton } from '@chakra-ui/react';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -14,6 +15,7 @@ import { LoginModal } from '../LoginModal';
 
 type HeaderProps = {
   name?: string;
+  pageTitle?: string;
 };
 
 type UserProfile = {
@@ -24,7 +26,7 @@ type UserProfile = {
   pictures: string | null;
 };
 
-export function NewHeader ({ name }: HeaderProps) {
+export function NewHeader ({ name, pageTitle }: HeaderProps) {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -38,6 +40,12 @@ export function NewHeader ({ name }: HeaderProps) {
 
   return (
     <>
+      {pageTitle ? (
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
+      ) : null}
+
       <Flex maxWidth={'1100'} margin={'0 auto'} justify={'space-between'} py={'24px'}>
         <Link href={'/'}>
           <Image src='/images/desktop/header_logo.png' alt='RedSterna logo' width={150} height={100} />
@@ -104,7 +112,9 @@ export function NewHeader ({ name }: HeaderProps) {
                       </Link>
                     </MenuItem>
                     <MenuItem>
-                      Configurações
+                      <Link href={'/configuracoes'}>
+                        Configurações
+                      </Link>
                     </MenuItem>
                   </MenuGroup>
                 </MenuList>
