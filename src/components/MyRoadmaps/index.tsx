@@ -42,6 +42,14 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
     return data.roadmaps;
   });
 
+  const checkOwnership = (author: string) => {
+    if (author === id) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <>
       <Box px={'40px'} mb={'32px'}>
@@ -77,7 +85,7 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
           <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
             {
               roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
-                return <RoadmapItem key={roadmap.id} roadmap={roadmap} />;
+                return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
               })
             }
           </Flex>

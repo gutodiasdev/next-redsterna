@@ -1,7 +1,8 @@
-import { Badge, Box, Flex, Grid, Heading, Icon, Text } from '@chakra-ui/react';
+import { Badge, Box, Flex, Grid, Heading, Icon, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AiFillStar } from 'react-icons/ai';
+import { useState } from 'react';
+import { AiFillStar, AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type Roadmap = {
   roadmap: {
@@ -17,10 +18,11 @@ type Roadmap = {
     roadmapReview: string;
     title: string;
     triDate: string;
-  };
+  },
+  isOwner: () => boolean;
 };
 
-export function RoadmapItem ({ roadmap }: Roadmap) {
+export function RoadmapItem ({ roadmap, isOwner }: Roadmap) {
 
   const parseBadgeContent = (content: string) => {
     switch (content) {
@@ -56,15 +58,19 @@ export function RoadmapItem ({ roadmap }: Roadmap) {
   };
 
   return (
-    <Link href={`/roteiro/${roadmap.id}`}>
-      <Grid key={roadmap.id} gridTemplateColumns={'auto 1fr'} width={'100%'} gap={'8px'} border={'1px'} borderColor={'gray.200'} borderRadius={'lg'} overflow={'hidden'} _hover={{ boxShadow: 'md', transition: '275ms ease-in-out' }}>
+    <Grid key={roadmap.id} gridTemplateColumns={'auto 1fr'} width={'100%'} gap={'8px'} border={'1px'} borderColor={'gray.200'} borderRadius={'lg'} overflow={'hidden'} _hover={{ boxShadow: 'md', transition: '275ms ease-in-out' }}
+      maxWidth={'1100px'}>
+      <Link href={`/roteiro/${roadmap.id}`}>
         <Box>
           <Image src={roadmap.cover} alt={roadmap.title} height={200} width={200} />
         </Box>
-        <Grid gridTemplateColumns={'1fr auto'} p={'8px'}>
+      </Link>
+      <Grid gridTemplateColumns={'1fr auto'} p={'8px'}>
+        <Link href={`/roteiro/${roadmap.id}`}>
           <Flex width={'100%'} flexDirection={'column'} justifyContent={'space-between'}>
             <Heading fontSize={'1.25rem'} fontWeight={'normal'}> {roadmap.title}</Heading>
-            <Flex gap={'8px'}>
+            <Text color={'gray.500'} >{roadmap.roadmapReview.substring(0, 80)}...</Text>
+            <Flex gap={'8px'} mt={'8px'}>
               {
                 roadmap.interests.map((interest: string, index: number) => {
                   return (
@@ -76,14 +82,25 @@ export function RoadmapItem ({ roadmap }: Roadmap) {
               }
             </Flex>
           </Flex>
-          <Flex flexDirection={'column'}>
-            <Flex gap={'4px'} alignItems={'center'}>
-              <Icon as={AiFillStar} />
-              <Text>({roadmap.rate})</Text>
-            </Flex>
+        </Link>
+        <Flex flexDirection={'column'} justifyContent={'space-between'}>
+          <Flex gap={'4px'} alignItems={'center'}>
+            <Icon as={AiFillStar} />
+            <Text>({roadmap.rate})</Text>
           </Flex>
-        </Grid>
+          <Stack direction={'row'} spacing={'16px'} alignItems={'center'}>
+            {isOwner() ? (
+              <>
+                <Link href={`/roteiro/editar/${roadmap.id}`}>
+                  <Icon as={AiOutlineEdit} fontSize={'0.8rem'} />
+                </Link>
+                <Icon as={AiOutlineDelete} color={'red.400'} fontSize={'0.8rem'} />
+              </>
+            ) : null}
+          </Stack>
+        </Flex>
       </Grid>
-    </Link>
+    </Grid>
+
   );
 }
