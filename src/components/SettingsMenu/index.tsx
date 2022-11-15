@@ -19,16 +19,16 @@ export function SettingsMenu ({ children }: SettingsMenuProps) {
         width={'240px'}
         borderColor={'gray.300'}
       >
-        <Link href={'/configuracoes'}>
-          <Flex gap={'8px'} alignItems={'center'}>
-            <BsGear />
-            Configurações
-          </Flex>
-        </Link>
         <Link href={'/configuracoes/editar-perfil'}>
           <Flex gap={'8px'} alignItems={'center'}>
             <MdOutlinePersonOutline />
             Editar perfil
+          </Flex>
+        </Link>
+        <Link href={'/configuracoes'}>
+          <Flex gap={'8px'} alignItems={'center'}>
+            <BsGear />
+            Configurações
           </Flex>
         </Link>
       </Flex>

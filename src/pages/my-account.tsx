@@ -18,36 +18,14 @@ import { useMutation, useQuery } from 'react-query';
 import { MyAccountCreateMenu } from '../components/MyAccountCreateMenu';
 import { MyDestinations } from '../components/MyDesinations';
 import { NewHeader } from '../components/NewHeader';
-import { apiUrlProvider } from '../config';
-import { AuthContext } from '../contexts/AuthContext';
+import { ServerSideUser } from '../config/@types/user';
 import { api } from '../services/apiClient';
 import { withSSRAuth } from '../utils/withSSRAuth';
 
-type UserProfile = {
-  id: string,
-  email: string,
-  name: string,
-  image: string | null,
-  pictures: string | null;
-};
-
-type AccountProps = {
-  user: {
-    id: string;
-    email: string;
-    name: string | null;
-    image: string | null;
-    pictures: string | null;
-  };
-};
-
-export default function MyAccountPage () {
-  const { user } = useContext(AuthContext);
+export default function MyAccountPage ({ user }: ServerSideUser) {
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
-
-  console.log(user);
 
   const followMutation = useMutation(async () => {
     await api.post('/user/follow', {
@@ -89,7 +67,7 @@ export default function MyAccountPage () {
       <Head>
         <title>Minha Conta - RedSterna</title>
       </Head>
-      <NewHeader name={user?.name || 'Bem vindo'} />
+      <NewHeader name={user.name} />
       <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'}>
@@ -104,9 +82,9 @@ export default function MyAccountPage () {
           minHeight={'160px'}
           alignItems={'flex-start'}
         >
-          <Avatar size={'2xl'} mt={'-72px'} name={user?.name || 'Bem vindo'} />
+          <Avatar size={'2xl'} mt={'-72px'} name={user.name} />
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Heading as={'h4'}>{user?.name || 'Bem vindo'} </Heading>
+            <Heading as={'h4'}>{user.name} </Heading>
             {!isFollowed && !isSameUser ? (
               <Button leftIcon={<AiOutlineHeart />} variant={'outline'} colorScheme={'red'} onClick={handleFollowUnfollow} borderRadius={'full'}>
                 Seguir
@@ -120,29 +98,25 @@ export default function MyAccountPage () {
             )}
           </Flex>
         </Grid>
-        {/* <MyDestinations userId={String(user?.id)} /> */}
+        <MyDestinations id={user.id} />
       </Grid>
     </>
   );
 }
 
-// export const getServerSideProps = withSSRAuth(async (ctx) => {
-//   const cookies = parseCookies(ctx);
-//   const token = cookies['redsterna.token'];
+export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
 
-//   const response = await fetch('https://redsterna.herokuapp.com/user/me', {
-//     headers: new Headers({
-//       'Authorization': `Bearer ${token}`
-//     })
-//   });
+  const { data: user } = await api.get('/user/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 
-//   // console.log(await response.json());
-
-//   const user = await response.json();
-
-//   return {
-//     props: {
-//       user
-//     },
-//   };
-// });
+  return {
+    props: {
+      user
+    }
+  };
+});

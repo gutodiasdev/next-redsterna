@@ -11,18 +11,16 @@ import { useQuery } from 'react-query';
 import { api } from '../../services/apiClient';
 
 type MyDestinationsProps = {
-  userId: string;
+  id: string;
 };
 
-export function MyDestinations ({ userId }: MyDestinationsProps) {
+export function MyDestinations ({ id }: MyDestinationsProps) {
 
   const { data, isLoading, error } = useQuery(['myDestinations'], async () => {
-    const { data } = await api.get(`/roadmaps/user?id=${userId}`);
+    const { data } = await api.get(`/roadmaps/user?id=${id}`);
 
     return data.roadmaps;
   });
-
-  console.log(data);
 
   return (
     <>

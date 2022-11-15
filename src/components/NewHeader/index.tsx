@@ -27,16 +27,8 @@ type UserProfile = {
 };
 
 export function NewHeader ({ name, pageTitle }: HeaderProps) {
-  const { isAuthenticated, user, signOut } = useContext(AuthContext);
+  const { signOut } = useContext(AuthContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const { data, isLoading } = useQuery(['user', String(user?.id)], async () => {
-    const { data } = await api.get<UserProfile>(`/user/me`);
-
-    return data;
-  }, {
-    staleTime: 1000 * 60 * 5
-  });
 
   return (
     <>
@@ -64,7 +56,7 @@ export function NewHeader ({ name, pageTitle }: HeaderProps) {
             <Link href={'/dicas-de-viagem'}>Dicas de Viagem</Link>
           </Flex>
 
-          {!isAuthenticated || isLoading ? (
+          {!name ? (
             <>
               <Flex alignItems={'center'} gap={'4px'}>
                 <Icon as={AiOutlineUserAdd} />
@@ -85,11 +77,9 @@ export function NewHeader ({ name, pageTitle }: HeaderProps) {
                   <Divider orientation='vertical' />
                   <Flex alignItems={'center'} gap={'4px'} cursor={'pointer'} border={'1px'} p={'8px'} borderRadius={'99px'} borderColor={'gray.400'}>
                     <Avatar size={'sm'} />
-                    <Skeleton isLoaded={!isLoading}>
-                      <span>
-                        {data?.name}
-                      </span>
-                    </Skeleton>
+                    <span>
+                      {name}
+                    </span>
                   </Flex>
                 </MenuButton>
                 <MenuList>

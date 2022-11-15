@@ -127,6 +127,10 @@ model Destination {
   longitude           String
   roadmapId           String
   images              String[]
+  cityRate            Int                   @default(5)
+  destinationReview   String?
+  hotel               String?
+  hotelRate           Int                   @default(5)
   Roadmap             Roadmap               @relation(fields: [roadmapId], references: [id])
   DestinationComments DestinationComments[]
 }
