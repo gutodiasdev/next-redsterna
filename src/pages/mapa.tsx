@@ -1,5 +1,6 @@
 import { parseCookies } from 'nookies';
 import { useQuery } from 'react-query';
+import Footer from '../components/Footer';
 import MapPage from '../components/Map';
 import { NewHeader } from '../components/NewHeader';
 import { api } from '../services/apiClient';
@@ -37,6 +38,7 @@ export default function Map ({ user }: AccountProps) {
     <>
       <NewHeader name={isLoading ? '' : String(data?.name)} />
       <MapPage height={300} />
+      <Footer />
     </>
   );
 }

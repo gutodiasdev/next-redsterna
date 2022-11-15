@@ -34,7 +34,10 @@ export function EditProfileForm ({ userId }: EditProfileFormProps) {
   const { data, isLoading } = useQuery(['user', userId], async () => {
     const { data } = await api.get<UserResponse>(`/user/${userId}`);
     return data;
+  }, {
+    staleTime: 1000 * 60 * 5
   });
+  console.log(data);
 
   const handleCheck = (event: any) => {
     let updatedList = [...interests];

@@ -12,6 +12,7 @@ import { Flex, HStack, Spinner } from '@chakra-ui/react';
 import { api } from '../services/apiClient';
 import { AuthContext } from '../contexts/AuthContext';
 import { withSSRAuth } from '../utils/withSSRAuth';
+import Footer from '../components/Footer';
 
 
 /* eslint-disable */
@@ -452,6 +453,7 @@ export default function Profile () {
           </Flex>
         )}
       </Flex>
+      <Footer />
     </>
   );
 };

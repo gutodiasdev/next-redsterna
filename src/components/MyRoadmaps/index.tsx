@@ -1,39 +1,58 @@
 import {
-  Box, Button, Divider,
+  Box,
+  Button,
+  Divider,
   Flex,
-  Grid,
-  Heading, Icon, Spinner,
+  Heading,
+  Icon,
+  Spinner,
   Text
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { RiEmotionSadLine } from 'react-icons/ri';
 import { useQuery } from 'react-query';
 
 import { api } from '../../services/apiClient';
+import { RoadmapItem } from './RoadmapItem';
 
 type MyRoadmapsProps = {
-  userId: string;
+  id: string;
 };
 
-export function MyRoadmaps ({ userId }: MyRoadmapsProps) {
+type Roadmap = {
+  id: string;
+  author: string;
+  cover: string;
+  createdAt: string;
+  daysOnTrip: number;
+  interests: Array<string>;
+  made: boolean;
+  perPersonCost: string;
+  rate: number;
+  roadmapReview: string;
+  title: string;
+  triDate: string;
+};
 
-  const { data, isLoading, error } = useQuery(['myDestinations'], async () => {
-    const { data } = await api.get(`/itineraries/user/${userId}`);
+export function MyRoadmaps ({ id }: MyRoadmapsProps) {
 
-    return data;
+  const { data: roadmaps, isLoading, error } = useQuery(['myDestinations', id], async () => {
+    const { data } = await api.get(`/roadmaps/user?id=${id}`);
+
+    return data.roadmaps;
   });
 
   return (
     <>
-      <Box px={'40px'}>
-        <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'}>
-          Meus destinos
+      <Box px={'40px'} mb={'32px'}>
+        <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
+          Meus Roteiros
         </Heading>
-        <Divider py={'8px'} />
         {isLoading ? (
           <Flex w={'100%'} justify={'center'}>
             <Spinner />
           </Flex>
-        ) : (data.itineraries.length === 0) ? (
+        ) : (roadmaps.length === 0) ? (
           <Flex
             textAlign={'center'}
             flexDirection={'column'}
@@ -45,9 +64,9 @@ export function MyRoadmaps ({ userId }: MyRoadmapsProps) {
             py={'40px'}
           >
             <Icon as={RiEmotionSadLine} size={'2rem'} />
-            <Text>Você ainda não tem roteiros</Text>
+            <Text>Você ainda não tem destinos</Text>
             <Button variant={'outline'} colorScheme={'red'}>
-              Criar novo roteiro
+              Adicionar novo destino
             </Button>
           </Flex>
         ) : error ? (
@@ -55,11 +74,20 @@ export function MyRoadmaps ({ userId }: MyRoadmapsProps) {
 
           </Flex>
         ) : (
-          <Grid>
-
-          </Grid>
+          <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
+            {
+              roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
+                return <RoadmapItem key={roadmap.id} roadmap={roadmap} />;
+              })
+            }
+          </Flex>
         )}
       </Box>
+      <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'0 auto'}>
+        <Link href={'/roteiros/todos'} >
+          Todos os roteiros
+        </Link>
+      </Button>
     </>
   );
 }

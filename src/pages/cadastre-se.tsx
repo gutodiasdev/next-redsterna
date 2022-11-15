@@ -12,6 +12,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { useMutation } from 'react-query';
 import * as yup from 'yup';
+import Footer from '../components/Footer';
+import { NewHeader } from '../components/NewHeader';
 import { AuthContext } from '../contexts/AuthContext';
 
 type RegisterFormProps = {
@@ -54,9 +56,7 @@ const Register = () => {
 
   return (
     <>
-      <Head>
-        <title>Nova conta - RedSterna</title>
-      </Head>
+      <NewHeader pageTitle='Nova conta - RedSterna' />
       <Flex
         justifyContent={'center'}
         flexDirection={'column'}
@@ -143,6 +143,7 @@ const Register = () => {
           </Button>
         </Flex>
       </Flex>
+      <Footer />
     </>
   );
 };

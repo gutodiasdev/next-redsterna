@@ -18,14 +18,6 @@ type HeaderProps = {
   pageTitle?: string;
 };
 
-type UserProfile = {
-  id: string,
-  email: string,
-  name: string,
-  image: string | null,
-  pictures: string | null;
-};
-
 export function NewHeader ({ name, pageTitle }: HeaderProps) {
   const { signOut } = useContext(AuthContext);
   const { isOpen, onClose, onOpen } = useDisclosure();

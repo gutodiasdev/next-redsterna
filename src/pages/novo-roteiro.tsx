@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { AxiosRequestConfig } from 'axios';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { useRouter } from 'next/router';
+import Footer from '../components/Footer';
 
 type FormProps = {
   roadmap_type: string;
@@ -254,7 +255,7 @@ export default function Itinerary () {
               <Checkbox colorScheme={'red'} onChange={handleCheck} value='beach'>Praia</Checkbox>
               <Checkbox colorScheme={'red'} onChange={handleCheck} value='countryside'>Campo</Checkbox>
               <Checkbox colorScheme={'red'} onChange={handleCheck} value='mountain'>Montanha</Checkbox>
-              <Checkbox colorScheme={'red'} onChange={handleCheck} value='cachoeira'>Cachoeira</Checkbox>
+              <Checkbox colorScheme={'red'} onChange={handleCheck} value='waterfall'>Cachoeira</Checkbox>
               <Checkbox colorScheme={'red'} onChange={handleCheck} value='camping'>Camping</Checkbox>
               <Checkbox colorScheme={'red'} onChange={handleCheck} value='trekking'>Trekking</Checkbox>
             </Grid>
@@ -380,6 +381,7 @@ export default function Itinerary () {
           </Box>
         </VStack>
       </Box>
+      <Footer />
     </>
   );
 };

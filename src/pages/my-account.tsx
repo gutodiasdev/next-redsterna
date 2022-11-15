@@ -15,8 +15,9 @@ import {
   AiFillHeart, AiOutlineHeart
 } from 'react-icons/ai';
 import { useMutation, useQuery } from 'react-query';
+import Footer from '../components/Footer';
 import { MyAccountCreateMenu } from '../components/MyAccountCreateMenu';
-import { MyDestinations } from '../components/MyDesinations';
+import { MyRoadmaps } from '../components/MyRoadmaps';
 import { NewHeader } from '../components/NewHeader';
 import { ServerSideUser } from '../config/@types/user';
 import { api } from '../services/apiClient';
@@ -68,7 +69,7 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
         <title>Minha Conta - RedSterna</title>
       </Head>
       <NewHeader name={user.name} />
-      <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'}>
+      <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'} pb={'64px'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'}>
             <Image src='/images/background_header.jpg' alt={'Header'} width={'1100'} height={'300'} placeholder='blur' blurDataURL='/images/background_header.jpg' />
@@ -98,8 +99,9 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
             )}
           </Flex>
         </Grid>
-        <MyDestinations id={user.id} />
+        <MyRoadmaps id={user.id} />
       </Grid>
+      <Footer />
     </>
   );
 }
