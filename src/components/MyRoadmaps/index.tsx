@@ -50,12 +50,17 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
     }
   };
 
+  console.log();
+
   return (
     <>
       <Box px={'40px'} mb={'32px'}>
-        <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
-          Meus Roteiros
-        </Heading>
+        <Flex justifyContent={'space-between'} alignItems={'center'}>
+          <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
+            Meus Roteiros
+          </Heading>
+          <Text>{roadmaps.length} roteiros publicados </Text>
+        </Flex>
         {isLoading ? (
           <Flex w={'100%'} justify={'center'}>
             <Spinner />
@@ -82,20 +87,18 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
 
           </Flex>
         ) : (
-          <>
-            <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
-              {
-                roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
-                  return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
-                })
-              }
-            </Flex>
-            <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'0 auto'}>
+          <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
+            {
+              roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
+                return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
+              })
+            }
+            <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'16px auto'} >
               <Link href={'/roteiros/todos'} >
                 Todos os roteiros
               </Link>
             </Button>
-          </>
+          </Flex>
         )}
       </Box>
 
