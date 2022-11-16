@@ -35,9 +35,11 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
 
-  const { data, isLoading, isFetched } = useQuery(['account', user.id], async () => {
+  const { data, isLoading, error } = useQuery(['account', user.id], async () => {
     const { data } = await api.get(`/user/${user.id}`);
     return data;
+  }, {
+    staleTime: 1000 * 60 * 60 * 24
   });
 
   const followMutation = useMutation(async () => {
@@ -75,18 +77,16 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
     }
   };
 
-  console.log(user);
-
   return (
     <>
       <Head>
         <title>Minha Conta - RedSterna</title>
       </Head>
-      <NewHeader name={user.name} />
+      <NewHeader name={user.name ? user.name : 'Usuário'} />
       <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'} pb={'64px'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'} width={'1100px'} height={'300px'} position={'relative'}>
-            <Image src={isLoading ? '/images/background_header.jpg' : data.user.pictures.cover} alt={'Header'} width={1100} height={300} style={{ objectFit: 'cover', objectPosition: 'center' }} />
+            <Image src={isLoading ? '/images/background_header.jpg' : error ? '/images/background_header.jpg' : data.user.pictures?.cover || '/images/background_header.jpg'} alt={'Header'} width={1100} height={300} style={{ objectFit: 'cover', objectPosition: 'center' }} />
             <IconButton as={RiEditFill} size={'xs'} cursor={'pointer'} aria-label={'Editar Capa'} position={'absolute'} zIndex={99} bottom={5} right={5} onClick={coverForm.onOpen} />
           </Box>
         </Flex>
@@ -98,7 +98,7 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
           minHeight={'160px'}
           alignItems={'flex-start'}
         >
-          <Avatar size={'2xl'} mt={'-72px'} name={user.name} onClick={avatarForm.onOpen} cursor={'pointer'} src={isLoading ? null : data.user.pictures.profile} boxShadow={'md'} />
+          <Avatar size={'2xl'} mt={'-72px'} name={user.name ? user.name : 'Usuário'} onClick={avatarForm.onOpen} cursor={'pointer'} src={isLoading ? null : error ? null : data.user.pictures?.profile || null} boxShadow={'md'} />
           <Flex justifyContent={'space-between'} alignItems={'center'}>
             <Heading as={'h4'}>{user.name} </Heading>
             {!isFollowed && !isSameUser ? (

@@ -82,20 +82,23 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
 
           </Flex>
         ) : (
-          <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
-            {
-              roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
-                return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
-              })
-            }
-          </Flex>
+          <>
+            <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
+              {
+                roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
+                  return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
+                })
+              }
+            </Flex>
+            <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'0 auto'}>
+              <Link href={'/roteiros/todos'} >
+                Todos os roteiros
+              </Link>
+            </Button>
+          </>
         )}
       </Box>
-      <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'0 auto'}>
-        <Link href={'/roteiros/todos'} >
-          Todos os roteiros
-        </Link>
-      </Button>
+
     </>
   );
 }
