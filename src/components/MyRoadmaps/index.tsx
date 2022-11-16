@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Icon,
+  Skeleton,
   Spinner,
   Text
 } from '@chakra-ui/react';
@@ -36,10 +37,10 @@ type Roadmap = {
 
 export function MyRoadmaps ({ id }: MyRoadmapsProps) {
 
-  const { data: roadmaps, isLoading, error } = useQuery(['myDestinations', id], async () => {
+  const { data, isLoading, error } = useQuery(['myDestinations', id], async () => {
     const { data } = await api.get(`/roadmaps/user?id=${id}`);
 
-    return data.roadmaps;
+    return data;
   });
 
   const checkOwnership = (author: string) => {
@@ -59,13 +60,13 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
           <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
             Meus Roteiros
           </Heading>
-          <Text>{roadmaps.length} roteiros publicados </Text>
+          <Text>{isLoading ? <Skeleton /> : `${data.roadmaps.length} roteiros com ${data.destinations.length} destinos publicados`}  </Text>
         </Flex>
         {isLoading ? (
           <Flex w={'100%'} justify={'center'}>
             <Spinner />
           </Flex>
-        ) : (roadmaps.length === 0) ? (
+        ) : (data.roadmaps.length === 0) ? (
           <Flex
             textAlign={'center'}
             flexDirection={'column'}
@@ -89,7 +90,7 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
         ) : (
           <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
             {
-              roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
+              data.roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
                 return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
               })
             }
