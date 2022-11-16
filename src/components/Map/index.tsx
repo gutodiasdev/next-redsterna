@@ -14,8 +14,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { api } from '../../services/apiClient';
 
-import * as C from "./styles";
-
 type MapPageProps = {
   height: number;
 };
