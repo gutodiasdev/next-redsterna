@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import Footer from '../components/Footer';
 import MapPage from '../components/Map';
 import { NewHeader } from '../components/NewHeader';
+import { ServerSideUser } from '../config/@types/user';
 import { api } from '../services/apiClient';
 import { withSSRAuth } from '../utils/withSSRAuth';
 
@@ -14,17 +15,7 @@ type UserProfile = {
   pictures: string | null;
 };
 
-type AccountProps = {
-  user: {
-    id: string;
-    email: string;
-    name: string | null;
-    image: string | null;
-    pictures: string | null;
-  };
-};
-
-export default function Map ({ user }: AccountProps) {
+export default function Map ({ user }: ServerSideUser) {
 
   const { data, isLoading } = useQuery(['user', user.id], async () => {
     const { data } = await api.get<UserProfile>(`/user/me`);

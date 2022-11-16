@@ -12,6 +12,19 @@ import { withSSRAuth } from '../../utils/withSSRAuth';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 
+export type ServerSideUser = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+    pictures: {
+      cover: string;
+      profile: string;
+    } | null;
+  };
+};
+
 type DestinationProps = {
   id: string,
   name: string,
@@ -56,7 +69,7 @@ type RoadmapFetcherProps = {
   roadmaps: Array<RoadmapProps>;
 };
 
-export default function ListItinerary () {
+export default function ListItinerary ({ user }: ServerSideUser) {
   const { data, error, isLoading } = useQuery(['destinations'], async () => {
     const { data } = await api.get('/destinations/all');
     return data;
@@ -80,7 +93,6 @@ export default function ListItinerary () {
       <Head>
         <title>RedSterna - Todos os roteiros</title>
       </Head>
-
       <NewHeader />
       <Box overflowWrap={'normal'}>
         <Grid my={'8px'} gridTemplateColumns={'1fr 1fr'}>
@@ -91,41 +103,44 @@ export default function ListItinerary () {
               </Heading>
               <Input type='text' size={'lg'} placeholder={'Ex.: São Paulo, Lima, Lisboa...'} borderColor={'gray.500'} _hover={{ borderColor: 'gray.500' }} />
             </FormControl>
-            <Grid gridTemplateColumns={'1fr 1fr'} my={'24px'} gap={'24px'}>
-              {
-                roadmaps.isLoading ? (
-                  <Spinner />
-                ) : (
-                  roadmaps.data?.reverse().map((roadmap: RoadmapProps) => {
-                    return (
-                      <Link key={roadmap.id} href={`/destinos/${roadmap.id}`}>
-                        <Box>
-                          <Box borderRadius={'lg'} overflow={'hidden'}>
-                            <img src={roadmap.cover} alt={roadmap.title} />
-                          </Box>
-                          <Grid p={'8px'} width={'100%'} justifyContent={'space-between'} gridTemplateColumns={'1fr auto'} alignItems={'start'}>
-                            <Box>
-                              <Heading as={'h2'} fontSize={'1rem'} fontWeight={'semibold'}>{roadmap.title}</Heading>
-                              <Flex color={'gray.500'} flexDirection={'column'} gap={'4px'}>
-                                <Text>{roadmap.roadmapReview.substring(0, 24)}...</Text>
-                                <Flex flexDirection={'column'} gap={'2px'}>
-                                  <Text fontSize={'0.825rem'}>Dias de viagem: {roadmap.daysOnTrip}</Text>
-                                  <Text fontSize={'0.825rem'}>Custo por pessoa: R${roadmap.perPersonCost}</Text>
-                                </Flex>
-                              </Flex>
+            <Box>
+              <Text mt={'24px'} mb={'8px'} color={'gray.400'}>Roteiros publicados: {roadmaps.data?.length}</Text>
+              <Grid gridTemplateColumns={'1fr 1fr'} mb={'24px'} gap={'24px'}>
+                {
+                  roadmaps.isLoading ? (
+                    <Spinner />
+                  ) : (
+                    roadmaps.data?.reverse().map((roadmap: RoadmapProps) => {
+                      return (
+                        <Link key={roadmap.id} href={`/destinos/${roadmap.id}`}>
+                          <Box>
+                            <Box borderRadius={'lg'} overflow={'hidden'}>
+                              <img src={roadmap.cover} alt={roadmap.title} />
                             </Box>
-                            <Flex gap={'4px'} alignItems={'center'} ml={'8px'}>
-                              <AiFillStar />
-                              <span>{roadmap.rate}</span>
-                            </Flex>
-                          </Grid>
-                        </Box>
-                      </Link>
-                    );
-                  })
-                )
-              }
-            </Grid>
+                            <Grid p={'8px'} width={'100%'} justifyContent={'space-between'} gridTemplateColumns={'1fr auto'} alignItems={'start'}>
+                              <Box>
+                                <Heading as={'h2'} fontSize={'1rem'} fontWeight={'semibold'}>{roadmap.title}</Heading>
+                                <Flex color={'gray.500'} flexDirection={'column'} gap={'4px'}>
+                                  <Text>{roadmap.roadmapReview.substring(0, 24)}...</Text>
+                                  <Flex flexDirection={'column'} gap={'2px'}>
+                                    <Text fontSize={'0.825rem'}>Dias de viagem: {roadmap.daysOnTrip}</Text>
+                                    <Text fontSize={'0.825rem'}>Custo por pessoa: R${roadmap.perPersonCost}</Text>
+                                  </Flex>
+                                </Flex>
+                              </Box>
+                              <Flex gap={'4px'} alignItems={'center'} ml={'8px'}>
+                                <AiFillStar />
+                                <span>{roadmap.rate}</span>
+                              </Flex>
+                            </Grid>
+                          </Box>
+                        </Link>
+                      );
+                    })
+                  )
+                }
+              </Grid>
+            </Box>
           </Box>
           <Map
             provider={osm}

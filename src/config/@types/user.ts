@@ -10,3 +10,29 @@ export type ServerSideUser = {
     } | null;
   };
 };
+
+export type InputUserUpdate = {
+  name?: string;
+  email?: string;
+  emailVerified?: string;
+  image?: string;
+  firstname?: string;
+  lastname?: string;
+  gender?: string;
+  pictures?: {
+    cover?: string;
+    profile?: string;
+  };
+  social?: {
+    facebook?: string;
+    instagram?: string;
+  };
+  about?: string;
+  birthdate?: string;
+  confirmPolicy?: boolean;
+  country?: string;
+  ranking?: string;
+  interests?: Array<string>;
+  username?: string;
+  password?: string;
+};

@@ -10,16 +10,16 @@ import {
   TipsText,
 } from "../styles/home";
 import { withSSRGuest } from '../utils/withSSRGuest';
-import { Header } from '../components/Header';
 import Footer from '../components/Footer';
 import { NewHeader } from '../components/NewHeader';
+import { HomeMap } from '../components/Map/HomeMap';
 
 export default function Home () {
   return (
     <>
-      <NewHeader />
+      <NewHeader pageTitle='RedSterna - Rede Social de Viagens' />
       <Container>
-        <MapPage height={300} />
+        <HomeMap height={300} />
         <Box>
           <Heading
             as='h2'
