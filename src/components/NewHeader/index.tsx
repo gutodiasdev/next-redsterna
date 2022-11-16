@@ -8,9 +8,7 @@ import { BsSignpostSplit } from 'react-icons/bs';
 import { CiRollingSuitcase } from 'react-icons/ci';
 import { HiOutlineGlobeAmericas } from 'react-icons/hi2';
 import { VscSignIn, VscSignOut } from 'react-icons/vsc';
-import { useQuery } from 'react-query';
 import { AuthContext } from '../../contexts/AuthContext';
-import { api } from '../../services/apiClient';
 import { LoginModal } from '../LoginModal';
 
 type HeaderProps = {
@@ -54,7 +52,7 @@ export function NewHeader ({ name, pageTitle }: HeaderProps) {
                 <Icon as={AiOutlineUserAdd} />
                 <Link href={'/cadastre-se'}>Cadastre-se</Link>
               </Flex>
-              <Flex alignItems={'center'} gap={'4px'} onClick={onOpen}>
+              <Flex alignItems={'center'} gap={'4px'} onClick={onOpen} cursor={'pointer'}>
                 <Icon as={VscSignIn} />
                 Login
               </Flex>

@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Footer from '../../components/Footer';
 import { NewHeader } from '../../components/NewHeader';
 import * as C from "../../styles/suggestions";
+import { withSSRGuest } from '../../utils/withSSRGuest';
 
-const Suggestions = () => {
+export default function Suggestions () {
   const cardprops = [
     {
       title: "ALUGUEL DE CARRO",
@@ -82,8 +84,13 @@ const Suggestions = () => {
           ))}
         </C.Section>
       </C.Container>
+      <Footer />
     </>
   );
 };
 
-export default Suggestions;
+export const getServerSideProps = withSSRGuest(async (ctx) => {
+  return {
+    props: {}
+  };
+});

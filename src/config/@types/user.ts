@@ -5,8 +5,10 @@ export type ServerSideUser = {
     email: string;
     image: string | null;
     pictures: {
+      id: string;
       cover: string;
       profile: string;
+      userProfileId: string;
     } | null;
   };
 };

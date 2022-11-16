@@ -11,6 +11,7 @@ import { api } from '../../services/apiClient';
 import { withSSRAuth } from '../../utils/withSSRAuth';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
+import { withSSRGuest } from '../../utils/withSSRGuest';
 
 export type ServerSideUser = {
   user: {
@@ -170,21 +171,27 @@ export default function ListItinerary ({ user }: ServerSideUser) {
   );
 }
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
-  const cookies = parseCookies(ctx);
-  const token = cookies['redsterna.token'];
+// export const getServerSideProps = withSSRAuth(async (ctx) => {
+//   const cookies = parseCookies(ctx);
+//   const token = cookies['redsterna.token'];
 
-  const response = await fetch('https://redsterna.herokuapp.com/user/me', {
-    headers: new Headers({
-      'Authorization': `Bearer ${token}`
-    })
-  });
+//   const response = await fetch('https://redsterna.herokuapp.com/user/me', {
+//     headers: new Headers({
+//       'Authorization': `Bearer ${token}`
+//     })
+//   });
 
-  const user = await response.json();
+//   const user = await response.json();
 
+//   return {
+//     props: {
+//       user
+//     },
+//   };
+// });
+
+export const getServerSideProps = withSSRGuest(async (ctx) => {
   return {
-    props: {
-      user
-    },
+    props: {}
   };
 });
