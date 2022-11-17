@@ -8,7 +8,12 @@ export function withSSRGuest<P extends { [key: string]: any; }> (fn: GetServerSi
     const cookies = parseCookies(ctx);
 
     if (cookies['redsterna.token']) {
-      return await fn(ctx);
+      return {
+        redirect: {
+          destination: '/my-account',
+          permanent: false
+        }
+      };
     }
 
     return await fn(ctx);

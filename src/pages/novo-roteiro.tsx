@@ -14,6 +14,8 @@ import { AxiosRequestConfig } from 'axios';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import Footer from '../components/Footer';
+import { ServerSideUser } from './destinos';
+import { parseCookies } from 'nookies';
 
 type FormProps = {
   roadmap_type: string;
@@ -46,7 +48,7 @@ type DestinationProps = {
   destinationReview: string;
 };
 
-export default function Itinerary () {
+export default function Itinerary ({ user }: ServerSideUser) {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -59,7 +61,6 @@ export default function Itinerary () {
   const [destinationImages, setDestinationImages] = useState<Array<string>>([]);
 
   const router = useRouter();
-  const { user } = useContext(AuthContext);
   const [roadmapImage, setRoadmapImage] = useState('');
   const { register, formState: { isSubmitting }, handleSubmit } = useForm<FormProps>();
 
@@ -127,7 +128,7 @@ export default function Itinerary () {
       rate: 5,
       destinations: destinations
     });
-    router.push(`/destinos/${roadmap.data.id}`);
+    router.push(`/roteiros/${roadmap.data.id}`);
   }, {
     onSuccess: () => {
       console.log('success');
@@ -176,7 +177,7 @@ export default function Itinerary () {
 
   return (
     <>
-      <NewHeader pageTitle='Crie um roteiro - RedSterna' />
+      <NewHeader pageTitle='Crie um roteiro - RedSterna' name={user.name} />
       <Box w={'1100px'} margin={'0 auto'} my={'32px'}>
         <Heading mb={'32px'}>
           Criar Roteiro
@@ -201,7 +202,7 @@ export default function Itinerary () {
                 roadmapImage && !isSending ? (
                   <Box width={1100} height={200} borderRadius={'lg'} overflow={'hidden'} position={'relative'}>
                     <Icon as={AiFillCloseCircle} position={'absolute'} zIndex={99} color={'red'} right={1} top={1} backgroundColor={'white'} borderRadius={'full'} />
-                    <Image src={roadmapImage} alt='roadmap cover' fill />
+                    <Image src={roadmapImage} alt='roadmap cover' fill style={{ objectFit: 'cover' }} />
                   </Box>
                 ) : (
                   <VStack textAlign={'center'}>
@@ -339,7 +340,7 @@ export default function Itinerary () {
                       destinationImages !== null ? (
                         destinationImages.map((image: string, index: number) => {
                           return (
-                            <Image key={index} src={image} alt={'Image'} width={200} height={200} />
+                            <Image key={index} src={image} alt={'Image'} width={200} height={200} style={{ objectFit: 'cover' }} />
                           );
                         })
                       ) : null
@@ -387,7 +388,18 @@ export default function Itinerary () {
 };
 
 export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
+
+  const { data: user } = await api.get('/user/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
   return {
-    props: {}
+    props: {
+      user
+    }
   };
 });

@@ -6,6 +6,8 @@ import {
   Grid,
   Heading, Icon, IconButton, Skeleton,
   SkeletonCircle,
+  Spinner,
+  Text,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
@@ -41,6 +43,31 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
   }, {
     staleTime: 1000 * 60 * 60 * 24
   });
+
+  const fetchFollowers: any = useQuery(['followers', user.id], async () => {
+    const { data } = await api.get(`/user/follows/${user.id}`, {
+      params: {
+        method: 'followers'
+      }
+    });
+    return data;
+  }, {
+    staleTime: 1000 * 60 * 60 * 24
+  });
+
+  const fetchFollowees: any = useQuery(['followees', user.id], async () => {
+    const { data } = await api.get(`/user/follows/${user.id}`, {
+      params: {
+        method: 'followees'
+      }
+    });
+
+    return data;
+  }, {
+    staleTime: 1000 * 60 * 60 * 24
+  });
+
+  console.log(fetchFollowees.data);
 
   const followMutation = useMutation(async () => {
     await api.post('/user/follow', {
@@ -100,7 +127,23 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
         >
           <Avatar size={'2xl'} mt={'-72px'} name={user.name ? user.name : 'Usuário'} onClick={avatarForm.onOpen} cursor={'pointer'} src={isLoading ? null : error ? null : data.user.pictures?.profile || null} boxShadow={'md'} />
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Heading as={'h4'}>{user.name} </Heading>
+            <Box>
+              <Heading as={'h4'}>{user.name} </Heading>
+              <Flex gap={'16px'} my={'8px'}>
+                {fetchFollowers.isLoading ? (
+                  <>
+                    <Text><Skeleton /> seguidores</Text>
+                    <Text><Skeleton /> seguindo</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text>
+                      {fetchFollowers.data.data.length} seguidor{fetchFollowers.data.data.length > 1 && 'es'}</Text>
+                    <Text>0 seguindo</Text>
+                  </>
+                )}
+              </Flex>
+            </Box>
             {!isFollowed && !isSameUser ? (
               <Button leftIcon={<AiOutlineHeart />} variant={'outline'} colorScheme={'red'} onClick={handleFollowUnfollow} borderRadius={'full'}>
                 Seguir
@@ -115,6 +158,37 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
           </Flex>
         </Grid>
         <MyRoadmaps id={user.id} />
+        <Flex gap={'24px'} width={'100%'}>
+          <Box>
+            <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
+              Seguidores
+            </Heading>
+            {
+              fetchFollowers.isLoading ? (
+                <Spinner />
+              ) : (
+                fetchFollowers.data.data.map((element: any, index: number) => (
+                  <Avatar key={index} name={element.follower.name} src={element.follower.pictures?.profile} />
+                ))
+              )
+            }
+          </Box>
+          <Box>
+            <Heading as='h3' color={'gray.400'} fontSize={'1.5rem'} fontWeight={'normal'} mb={'24px'}>
+              Seguindo
+            </Heading>
+            {
+              fetchFollowees.isLoading ? (
+                <Spinner />
+              ) : (
+                fetchFollowees.data.data.map((element: any, index: number) => (
+                  // <Avatar key={index} name={element.follower.name} src={element.follower.pictures?.profile} />
+                  <Text key={index}>{element.followeeId}</Text>
+                ))
+              )
+            }
+          </Box>
+        </Flex>
       </Grid>
       <Footer />
       <AvatarModal isOpen={avatarForm.isOpen} onClose={avatarForm.onClose} avatarSource={String(user.pictures?.id)} user={user.id} />
