@@ -7,9 +7,11 @@ import {
   Icon,
   Skeleton,
   Spinner,
-  Text
+  Text,
+  useDisclosure
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { RiEmotionSadLine } from 'react-icons/ri';
 import { useQuery } from 'react-query';
 
@@ -37,11 +39,11 @@ type Roadmap = {
 
 export function MyRoadmaps ({ id }: MyRoadmapsProps) {
 
+
   const { data, isLoading, error } = useQuery(['myDestinations', id], async () => {
     const { data } = await api.get(`/roadmaps/user?id=${id}`);
-
     return data;
-  });
+  }, { staleTime: 1000 * 60 * 60 * 24 });
 
   const checkOwnership = (author: string) => {
     if (author === id) {
@@ -91,7 +93,7 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
           <Flex flexDirection={'column'} gap={'16px'} my={'8px'}>
             {
               data.roadmaps.slice(0, 5).map((roadmap: Roadmap) => {
-                return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} />;
+                return <RoadmapItem key={roadmap.id} roadmap={roadmap} isOwner={() => checkOwnership(roadmap.author)} queryResetId={id} />;
               })
             }
             <Button size={'lg'} colorScheme={'red'} variant={'outline'} margin={'16px auto'} >
@@ -102,7 +104,6 @@ export function MyRoadmaps ({ id }: MyRoadmapsProps) {
           </Flex>
         )}
       </Box>
-
     </>
   );
 }

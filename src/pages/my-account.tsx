@@ -23,6 +23,7 @@ import { useMutation, useQuery } from 'react-query';
 import Footer from '../components/Footer';
 import { AvatarModal } from '../components/Modals/AvatarModal';
 import { CoverModal } from '../components/Modals/CoverModal';
+import { ExcludeRoadmapModal } from '../components/Modals/ExcludeRoadmapModal';
 import { MyAccountCreateMenu } from '../components/MyAccountCreateMenu';
 import { MyRoadmaps } from '../components/MyRoadmaps';
 import { NewHeader } from '../components/NewHeader';
@@ -33,6 +34,7 @@ import { withSSRAuth } from '../utils/withSSRAuth';
 export default function MyAccountPage ({ user }: ServerSideUser) {
   const avatarForm = useDisclosure();
   const coverForm = useDisclosure();
+
   const [isFollowed, setIsFollowed] = useState(false);
   const [isSameUser, setIsSameUser] = useState(true);
   const toast = useToast();
