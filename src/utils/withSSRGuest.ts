@@ -7,14 +7,14 @@ export function withSSRGuest<P extends { [key: string]: any; }> (fn: GetServerSi
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx);
 
-    if (cookies['redsterna.token']) {
-      return {
-        redirect: {
-          destination: '/my-account',
-          permanent: false
-        }
-      };
-    }
+    // if (cookies['redsterna.token']) {
+    //   return {
+    //     redirect: {
+    //       destination: '/my-account',
+    //       permanent: false
+    //     }
+    //   };
+    // }
 
     return await fn(ctx);
   };

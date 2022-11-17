@@ -1,10 +1,13 @@
 import Link from 'next/link';
+import { parseCookies } from 'nookies';
 import Footer from '../../components/Footer';
 import { NewHeader } from '../../components/NewHeader';
+import { ServerSideUser } from '../../config/@types/user';
+import { api } from '../../services/apiClient';
 import * as C from "../../styles/suggestions";
 import { withSSRGuest } from '../../utils/withSSRGuest';
 
-export default function Suggestions () {
+export default function Suggestions ({ user }: ServerSideUser) {
   const cardprops = [
     {
       title: "ALUGUEL DE CARRO",
@@ -73,7 +76,7 @@ export default function Suggestions () {
 
   return (
     <>
-      <NewHeader />
+      <NewHeader pageTitle='RedSterna - Dicas de Viagem' name={user.name} />
       <C.Container>
         <C.ImageContainer>
           <h2>DICAS DE VIAGEM</h2>
@@ -90,7 +93,18 @@ export default function Suggestions () {
 };
 
 export const getServerSideProps = withSSRGuest(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
+
+  const { data: user } = await api.get('/user/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
   return {
-    props: {}
+    props: {
+      user
+    }
   };
 });
