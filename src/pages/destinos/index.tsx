@@ -8,7 +8,6 @@ import { osm } from "pigeon-maps/providers";
 import { NewHeader } from '../../components/NewHeader';
 import { api } from '../../services/apiClient';
 
-import { withSSRAuth } from '../../utils/withSSRAuth';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 import { withSSRGuest } from '../../utils/withSSRGuest';
@@ -91,10 +90,7 @@ export default function ListItinerary ({ user }: ServerSideUser) {
 
   return (
     <>
-      <Head>
-        <title>RedSterna - Todos os roteiros</title>
-      </Head>
-      <NewHeader />
+      <NewHeader pageTitle='RedSterna - Todos os roteiros' name={user.name} />
       <Box overflowWrap={'normal'}>
         <Grid my={'8px'} gridTemplateColumns={'1fr 1fr'}>
           <Box as='form' px={'24px'} position={'sticky'}>
@@ -171,27 +167,19 @@ export default function ListItinerary ({ user }: ServerSideUser) {
   );
 }
 
-// export const getServerSideProps = withSSRAuth(async (ctx) => {
-//   const cookies = parseCookies(ctx);
-//   const token = cookies['redsterna.token'];
-
-//   const response = await fetch('https://redsterna.herokuapp.com/user/me', {
-//     headers: new Headers({
-//       'Authorization': `Bearer ${token}`
-//     })
-//   });
-
-//   const user = await response.json();
-
-//   return {
-//     props: {
-//       user
-//     },
-//   };
-// });
-
 export const getServerSideProps = withSSRGuest(async (ctx) => {
+  const cookies = parseCookies(ctx);
+  const token = cookies['redsterna.token'];
+
+  const { data: user } = await api.get('/user/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
   return {
-    props: {}
+    props: {
+      user
+    }
   };
 });
