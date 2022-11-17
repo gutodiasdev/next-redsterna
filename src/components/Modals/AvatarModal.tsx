@@ -52,13 +52,18 @@ export function AvatarModal ({ isOpen, onClose, avatarSource, user }: AvatarModa
   const uploadFileCallback = async (file: any) => {
     try {
       setIsSending(true);
-      const formData = new FormData();
-      formData.append('file', file[0] as File);
-      api.post('/upload', formData, config)
-        .then(response => {
-          const { source } = response.data;
-          setAvatarImage(source);
-        });
+      new Compressor(file[0] as File, {
+        quality: 0.75,
+        success (result) {
+          const formData = new FormData();
+          formData.append('file', result);
+          api.post('/upload', formData, config)
+            .then(response => {
+              const { source } = response.data;
+              setAvatarImage(source);
+            });
+        }
+      });
       setIsSending(false);
     } catch (e) {
       console.log(e);
@@ -79,6 +84,7 @@ export function AvatarModal ({ isOpen, onClose, avatarSource, user }: AvatarModa
     onSuccess: () => {
       onClose();
       queryClient.invalidateQueries(['account', user]);
+      queryClient.invalidateQueries(['user', user]);
     }
   });
 

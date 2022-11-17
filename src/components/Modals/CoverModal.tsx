@@ -52,13 +52,18 @@ export function CoverModal ({ isOpen, onClose, avatarSource, user }: AvatarModal
   const uploadFileCallback = async (file: any) => {
     try {
       setIsSending(true);
-      const formData = new FormData();
-      formData.append('file', file[0] as File);
-      api.post('/upload', formData, config)
-        .then(response => {
-          const { source } = response.data;
-          setCoverImage(source);
-        });
+      new Compressor(file[0] as File, {
+        quality: 0.75,
+        success (result) {
+          const formData = new FormData();
+          formData.append('file', result);
+          api.post('/upload', formData, config)
+            .then(response => {
+              const { source } = response.data;
+              setCoverImage(source);
+            });
+        }
+      });
       setIsSending(false);
     } catch (e) {
       console.log(e);
@@ -79,6 +84,7 @@ export function CoverModal ({ isOpen, onClose, avatarSource, user }: AvatarModal
     onSuccess: () => {
       onClose();
       queryClient.invalidateQueries(['account', user]);
+      queryClient.invalidateQueries(['user', user]);
     }
   });
 

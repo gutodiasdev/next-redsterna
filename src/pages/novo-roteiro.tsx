@@ -8,6 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsUpload } from 'react-icons/bs';
 import { City } from 'country-state-city';
 import { useMutation, useQuery } from 'react-query';
+import Compressor from 'compressorjs';
 import { api } from '../services/apiClient';
 import Image from 'next/image';
 import { AxiosRequestConfig } from 'axios';
@@ -48,6 +49,7 @@ type DestinationProps = {
   destinationReview: string;
 };
 
+
 export default function Itinerary ({ user }: ServerSideUser) {
   const [indexes, setIndexes] = useState<Array<number>>([]);
   const [counter, setCounter] = useState(0);
@@ -87,13 +89,19 @@ export default function Itinerary ({ user }: ServerSideUser) {
   const uploadFileCallback = async (file: any) => {
     try {
       setIsSending(true);
-      const formData = new FormData();
-      formData.append('file', file[0] as File);
-      api.post('/roadmaps/upload', formData, config)
-        .then(response => {
-          const { source } = response.data;
-          setRoadmapImage(source);
-        });
+      new Compressor(file[0] as File, {
+        quality: 0.8,
+        success (result) {
+          const formData = new FormData();
+          formData.append('file', result);
+          api.post('/roadmaps/upload', formData, config)
+            .then(response => {
+              const { source } = response.data;
+              setRoadmapImage(source);
+            });
+        }
+      }
+      );
       setIsSending(false);
     } catch (e) {
       console.log(e);
@@ -103,13 +111,18 @@ export default function Itinerary ({ user }: ServerSideUser) {
   const uploadDestinationFile = async (file: any, index: number) => {
     try {
       setIsSending(true);
-      const formData = new FormData();
-      formData.append('file', file[0] as File);
-      api.post('/roadmaps/upload', formData, config)
-        .then(response => {
-          const { source } = response.data;
-          setDestinationImages([...destinationImages, source]);
-        });
+      new Compressor(file[0] as File, {
+        quality: 0.8,
+        success (result) {
+          const formData = new FormData();
+          formData.append('file', result);
+          api.post('/roadmaps/upload', formData, config)
+            .then(response => {
+              const { source } = response.data;
+              setDestinationImages([...destinationImages, source]);
+            });
+        }
+      });
       setIsSending(false);
       destinations[index].images = destinationImages;
     } catch (e) {
