@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { AiOutlineUserAdd, AiOutlineBell } from 'react-icons/ai';
 import { BsSignpostSplit } from 'react-icons/bs';
 import { CiRollingSuitcase } from 'react-icons/ci';
-import { HiOutlineGlobeAmericas } from 'react-icons/hi2';
+import { HiOutlineGlobeAmericas, HiOutlineUsers } from 'react-icons/hi2';
 import { VscSignIn, VscSignOut } from 'react-icons/vsc';
 import { AuthContext } from '../../contexts/AuthContext';
 import { LoginModal } from '../LoginModal';
@@ -45,6 +45,13 @@ export function NewHeader ({ name, pageTitle }: HeaderProps) {
             <Icon as={BsSignpostSplit} />
             <Link href={'/dicas-de-viagem'}>Dicas de Viagem</Link>
           </Flex>
+          {name &&
+            <Flex alignItems={'center'} gap={'4px'}>
+              <Icon as={HiOutlineUsers} />
+              <Link href={'/usuarios'}>Usuários</Link>
+            </Flex>
+          }
+
 
           {!name ? (
             <>

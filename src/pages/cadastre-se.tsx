@@ -126,7 +126,7 @@ const Register = () => {
           >
             Cadastrar nova conta
           </Button>
-          <Flex alignItems={'center'} gap={'8px'}>
+          {/* <Flex alignItems={'center'} gap={'8px'}>
             <Divider />
             <Text>ou</Text>
             <Divider />
@@ -140,7 +140,7 @@ const Register = () => {
             onClick={() => signIn('google')}
           >
             Cadastre-se com Google
-          </Button>
+          </Button> */}
         </Flex>
       </Flex>
       <Footer />

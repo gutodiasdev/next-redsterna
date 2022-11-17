@@ -61,6 +61,7 @@ model User {
   role                ROLE                  @default(user)
   Account             Account[]
   CityCard            CityCard[]
+  Destination         Destination[]
   DestinationComments DestinationComments[]
   Follows             Follows[]
   Roadmap             Roadmap[]
@@ -79,11 +80,11 @@ model UsersPictures {
 }
 
 model UsersSocial {
-  id            String @id
-  facebook      String
-  instagram     String
-  userProfileId String @unique
-  User          User   @relation(fields: [userProfileId], references: [id])
+  id        String @id
+  facebook  String
+  instagram String
+  userId    String @unique
+  User      User   @relation(fields: [userId], references: [id])
 }
 
 model VerificationToken {
@@ -131,6 +132,8 @@ model Destination {
   destinationReview   String?
   hotel               String?
   hotelRate           Int                   @default(5)
+  author              String                @default("389b0b6b-012b-4e73-b815-1d40781ff892")
+  User                User                  @relation(fields: [author], references: [id])
   Roadmap             Roadmap               @relation(fields: [roadmapId], references: [id])
   DestinationComments DestinationComments[]
 }
@@ -140,6 +143,7 @@ model DestinationComments {
   author        String
   content       String
   destinationId String
+  rating        Int
   User          User        @relation(fields: [author], references: [id])
   Destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
 }
@@ -167,6 +171,7 @@ model RoadmapComments {
   author    String
   content   String
   roadmapId String
+  rating    Int
   Roadmap   Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
 }
 

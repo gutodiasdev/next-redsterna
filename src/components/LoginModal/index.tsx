@@ -100,7 +100,7 @@ export function LoginModal ({ isOpen, onClose }: LoginModalProps) {
             <Button type='submit' isLoading={isSubmitting} colorScheme={'red'}>
               Entrar
             </Button>
-            <Flex
+            {/* <Flex
               w={'100%'}
               justify={'center'}
               alignItems={'center'}
@@ -118,7 +118,7 @@ export function LoginModal ({ isOpen, onClose }: LoginModalProps) {
               >
                 Continuar com Google
               </Button>
-            </Flex>
+            </Flex> */}
           </Box>
         </ModalBody>
         <ModalFooter>
