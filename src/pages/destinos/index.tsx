@@ -96,8 +96,30 @@ export default function ListItinerary ({ user }: ServerSideUser) {
     <>
       <NewHeader pageTitle='RedSterna - Todos os roteiros' name={user.name} />
       <Box overflowWrap={'normal'}>
-        <Grid my={'8px'} gridTemplateColumns={'1fr 1fr'}>
-          <Box as='form' px={'24px'} position={'sticky'}>
+        <Box my={'8px'}>
+          <Map
+            provider={osm}
+            height={300}
+            defaultZoom={3}
+            defaultCenter={[-15.77972000, -47.92972000]}
+            minZoom={3}
+          >
+            <ZoomControl />
+            {isLoading ? (
+              <Spinner />
+            ) : error ? (
+              <Heading as={'h2'}>
+                Falha aos encontrar os itinerários
+              </Heading>
+            ) : (
+              data.destinations.map((destination: DestinationProps, index: number) => {
+                return (
+                  <Marker key={index} offset={[0, -5]} anchor={[Number(destination.latitude), Number(destination.longitude)]} onClick={({ event, anchor, payload }) => handleClick({ event, anchor, payload: destination })} color={'hsl(0, 100%, 50%)'} />
+                );
+              })
+            )}
+          </Map>
+          <Box as='form' px={'24px'} width={'1100px'} margin={'24px auto'}>
             <FormControl>
               <Heading mb={'16px'} fontSize={'1.25rem'} fontWeight={'normal'}>
                 Procure por cidades
@@ -106,7 +128,7 @@ export default function ListItinerary ({ user }: ServerSideUser) {
             </FormControl>
             <Box>
               <Text mt={'24px'} mb={'8px'} color={'gray.400'}>Roteiros publicados: {roadmaps.data?.length}</Text>
-              <Grid gridTemplateColumns={'1fr 1fr'} mb={'24px'} gap={'24px'}>
+              <Grid gridTemplateColumns={'repeat(3, 1fr)'} mb={'24px'} gap={'24px'}>
                 {
                   roadmaps.isLoading ? (
                     <Spinner />
@@ -115,7 +137,7 @@ export default function ListItinerary ({ user }: ServerSideUser) {
                       return (
                         <Link key={roadmap.id} href={`/destinos/${roadmap.id}`}>
                           <Box>
-                            <Box borderRadius={'lg'} overflow={'hidden'} >
+                            <Box borderRadius={'lg'} overflow={'hidden'} maxHeight={'150px'}>
                               <Image src={roadmap.cover} alt={roadmap.title} width={350} height={200} style={{ objectFit: 'cover' }} />
                             </Box>
                             <Grid p={'8px'} width={'100%'} justifyContent={'space-between'} gridTemplateColumns={'1fr auto'} alignItems={'start'}>
@@ -143,29 +165,8 @@ export default function ListItinerary ({ user }: ServerSideUser) {
               </Grid>
             </Box>
           </Box>
-          <Map
-            provider={osm}
-            height={512}
-            defaultZoom={3}
-            defaultCenter={[-15.77972000, -47.92972000]}
-            minZoom={3}
-          >
-            <ZoomControl />
-            {isLoading ? (
-              <Spinner />
-            ) : error ? (
-              <Heading as={'h2'}>
-                Falha aos encontrar os itinerários
-              </Heading>
-            ) : (
-              data.destinations.map((destination: DestinationProps, index: number) => {
-                return (
-                  <Marker key={index} offset={[0, -50]} anchor={[Number(destination.latitude), Number(destination.longitude)]} onClick={({ event, anchor, payload }) => handleClick({ event, anchor, payload: destination })} color={'hsl(0, 100%, 50%)'} />
-                );
-              })
-            )}
-          </Map>
-        </Grid>
+
+        </Box>
       </Box>
     </>
   );
