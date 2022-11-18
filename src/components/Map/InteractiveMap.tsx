@@ -48,7 +48,7 @@ export function InteractiveMap (props: MapPageProps) {
   });
 
   const handleClick = ({ event, anchor, payload }: ClickPointHandler) => {
-    router.push(`/roteiros/${payload.id}`);
+    router.push(`/destinos/${payload.id}`);
   };
 
   return (
