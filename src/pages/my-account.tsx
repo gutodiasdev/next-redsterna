@@ -108,10 +108,7 @@ export default function MyAccountPage ({ user }: ServerSideUser) {
 
   return (
     <>
-      <Head>
-        <title>Minha Conta - RedSterna</title>
-      </Head>
-      <NewHeader name={user.name ? user.name : 'Usuário'} />
+      <NewHeader name={user.name ? user.name : 'Usuário'} pageTitle='Minha Conta - RedSterna' />
       <Grid maxWidth={'1400'} justifyContent={'center'} margin={'0 auto'} pb={'64px'}>
         <Flex maxWidth={'100%'} justify={'center'}>
           <Box borderRadius={'16px'} overflow={'hidden'} width={'1100px'} height={'300px'} position={'relative'}>

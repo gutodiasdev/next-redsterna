@@ -40,12 +40,10 @@ type RatingProps = {
   content: string,
   rating: number,
   roadmapId: string;
-  roadmap: {
-    user: {
-      name: string,
-      pictures: {
-        profile: string,
-      };
+  user: {
+    name: string,
+    pictures: {
+      profile: string,
     };
   };
 };
@@ -67,16 +65,19 @@ export default function SingleRoadmap ({ user }: ServerSideUser) {
     const { data } = await api.get<Roadmap & any>(`/roadmaps/${id}`);
     return data.data;
   };
+
   const fecthRoadmapComments = async () => {
     const { data } = await api.get(`/roadmaps/comments/${id}`);
     return data.data;
   };
 
+  console.log(user.id);
+
   const { data, isLoading, error } = useQuery(['roadmap', id], fecthRoadmap, { staleTime: 1000 * 60 * 24 });
   const comments = useQuery(['roadmapComments', id], fecthRoadmapComments, { staleTime: 1000 * 10 });
 
   const updateRoadmapComment = async (values: RatingForm) => {
-    await api.post(`/comments/roadmap/${id}`, values);
+    await api.post(`/comments/roadmap/${id}`, { ...values, author: user.id });
   };
 
   const mutation = useMutation(updateRoadmapComment, {
@@ -247,9 +248,9 @@ export default function SingleRoadmap ({ user }: ServerSideUser) {
                     comments.data.map((comment: RatingProps, index: number) => (
                       <Box py={'32px '} width={{ md: '50%' }}>
                         <Flex alignItems={'center'} gap={'8px'}>
-                          <Avatar src={comment.roadmap.user.pictures.profile} name={comment.roadmap.user.name} />
+                          <Avatar src={comment.user.pictures?.profile} name={comment.user.name} />
                           <Box>
-                            <Heading as={'h3'} fontSize={'1.1rem'}>{comment.roadmap.user.name}</Heading>
+                            <Heading as={'h3'} fontSize={'1.1rem'}>{comment.user.name}</Heading>
                             {Array(5)
                               .fill(0)
                               .map((_, index) => (

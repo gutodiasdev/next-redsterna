@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import Footer from '../components/Footer';
 import { NewHeader } from '../components/NewHeader';
 import { AuthContext } from '../contexts/AuthContext';
+import { queryClient } from './_app';
 
 type RegisterFormProps = {
   email: string;
@@ -47,7 +48,10 @@ const Register = () => {
         position: 'top-right'
       });
     },
-    onSuccess: () => router.push('/my-account')
+    onSuccess: () => {
+      router.push('/my-account');
+      queryClient.invalidateQueries(['allUsers']);
+    }
   });
 
   const handleRegister: SubmitHandler<RegisterFormProps> = (values) => {

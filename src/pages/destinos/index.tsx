@@ -11,6 +11,8 @@ import { api } from '../../services/apiClient';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 import { withSSRGuest } from '../../utils/withSSRGuest';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 export type ServerSideUser = {
   user: {
@@ -70,6 +72,7 @@ type RoadmapFetcherProps = {
 };
 
 export default function ListItinerary ({ user }: ServerSideUser) {
+  const router = useRouter();
   const { data, error, isLoading } = useQuery(['destinations'], async () => {
     const { data } = await api.get('/destinations/all');
     return data;
@@ -81,11 +84,12 @@ export default function ListItinerary ({ user }: ServerSideUser) {
     const { data } = await api.get<RoadmapFetcherProps>('/roadmaps/all');
     return data.roadmaps;
   }, {
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 60 * 24
   });
 
   const handleClick = ({ event, anchor, payload }: ClickPointHandler) => {
     console.log(payload, anchor);
+    router.push(`/destinos/${payload.id}`);
   };
 
   return (
@@ -111,8 +115,8 @@ export default function ListItinerary ({ user }: ServerSideUser) {
                       return (
                         <Link key={roadmap.id} href={`/destinos/${roadmap.id}`}>
                           <Box>
-                            <Box borderRadius={'lg'} overflow={'hidden'}>
-                              <img src={roadmap.cover} alt={roadmap.title} />
+                            <Box borderRadius={'lg'} overflow={'hidden'} >
+                              <Image src={roadmap.cover} alt={roadmap.title} width={350} height={200} style={{ objectFit: 'cover' }} />
                             </Box>
                             <Grid p={'8px'} width={'100%'} justifyContent={'space-between'} gridTemplateColumns={'1fr auto'} alignItems={'start'}>
                               <Box>
