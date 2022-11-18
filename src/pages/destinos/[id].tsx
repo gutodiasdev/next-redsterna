@@ -13,6 +13,8 @@ import { AiFillStar } from 'react-icons/ai';
 import { withSSRGuest } from '../../utils/withSSRGuest';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Footer from '../../components/Footer';
+import { BsArrowLeftShort } from 'react-icons/bs';
 
 export type ServerSideUser = {
   user: {
@@ -93,9 +95,14 @@ export default function SingleDestination ({ user }: ServerSideUser) {
     staleTime: 1000 * 60 * 5
   });
 
-  const roadmaps = useQuery(['roadmaps'], async () => {
-    const { data } = await api.get<RoadmapFetcherProps>('/roadmaps/all');
-    return data.roadmaps;
+  const roadmaps = useQuery(['roadmaps', data?.destination.latitude, data?.destination.longitude], async () => {
+    const roadmaps = await api.get<RoadmapFetcherProps>('/destinations/getRelatedRoadmaps', {
+      params: {
+        latitude: data?.destination.latitude,
+        longitude: data?.destination.longitude,
+      }
+    });
+    return roadmaps.data;
   }, {
     staleTime: 1000 * 60 * 60 * 24
   });
@@ -104,6 +111,8 @@ export default function SingleDestination ({ user }: ServerSideUser) {
     console.log(payload, anchor);
     router.push(`/destinos/${payload.id}`);
   };
+
+  console.log(roadmaps.data);
 
   return (
     <>
@@ -137,6 +146,12 @@ export default function SingleDestination ({ user }: ServerSideUser) {
             </Map>
           )}
           <Box as='form' px={'24px'} width={'1100px'} margin={'24px auto'}>
+            <Flex mb={'24px'} alignItems={'center'} gap={'8px'}>
+              <BsArrowLeftShort />
+              <Link href={'/destinos'}>
+                Voltar
+              </Link>
+            </Flex>
             <FormControl>
               <Heading mb={'16px'} fontSize={'1.25rem'} fontWeight={'normal'}>
                 Procure por cidades
@@ -144,13 +159,13 @@ export default function SingleDestination ({ user }: ServerSideUser) {
               <Input type='text' size={'lg'} placeholder={'Ex.: São Paulo, Lima, Lisboa...'} borderColor={'gray.500'} _hover={{ borderColor: 'gray.500' }} />
             </FormControl>
             <Box>
-              <Text mt={'24px'} mb={'8px'} color={'gray.400'}>Roteiros publicados: {roadmaps.data?.length}</Text>
+              <Text mt={'24px'} mb={'8px'} color={'gray.400'}>Roteiros publicados: {roadmaps.data?.roadmaps.length}</Text>
               <Grid gridTemplateColumns={'repeat(3, 1fr)'} mb={'24px'} gap={'24px'}>
                 {
                   roadmaps.isLoading ? (
                     <Spinner />
                   ) : (
-                    roadmaps.data?.reverse().map((roadmap: RoadmapProps) => {
+                    roadmaps.data?.roadmaps.reverse().map((roadmap: RoadmapProps) => {
                       return (
                         <Link key={roadmap.id} href={`/destinos/${roadmap.id}`}>
                           <Box>
@@ -185,6 +200,7 @@ export default function SingleDestination ({ user }: ServerSideUser) {
 
         </Box>
       </Box>
+      <Footer />
     </>
   );
 }
